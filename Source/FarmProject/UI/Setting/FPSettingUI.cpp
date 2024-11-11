@@ -5,6 +5,7 @@
 #include "Components/Slider.h"
 #include "Components/ComboBoxString.h"
 #include "GameSystem/FPSingleTon.h"
+#include "Kismet/GameplayStatics.h"
 #include "Info/NameDefine.h"
 
 #define MusicSliderUIName TEXT("MusicSlider_UI")
@@ -59,6 +60,7 @@ void UFPSettingUI::OnMusicSlideValueChange(float value)
 
 void UFPSettingUI::OnSFXSlideValueChange(float value)
 {
+	UGameplayStatics::SpawnSound2D(this, ClickSound, 1.0f, 1.0f, 0.0f, SoundConcurrnecy.Get());
 	UFPSingleTon::Get().SetSFXValue(GetWorld(), value);
 }
 

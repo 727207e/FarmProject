@@ -38,4 +38,10 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<class UComboBoxString> ComboBoxLanguage;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<class USoundWave> ClickSound;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<class USoundConcurrency> SoundConcurrnecy;
 };
