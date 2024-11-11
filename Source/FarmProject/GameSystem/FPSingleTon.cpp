@@ -61,7 +61,7 @@ void UFPSingleTon::SetMusicValue(UObject* TargetWorld, float value)
 
 	UGameplayStatics::SetSoundMixClassOverride(TargetWorld, SoundMix, MusicSound, value, 1.0f, 1.0f, true);
 	UGameplayStatics::PushSoundMixModifier(TargetWorld, SoundMix);
-	UGameplayStatics::SaveGameToSlot(SaveGameREF, SAVEGAME_AUDIO_NAME, 0);
+	UGameplayStatics::SaveGameToSlot(SaveGameREF, SAVEGAME_NAME, 0);
 }
 
 void UFPSingleTon::SetSFXValue(UObject* TargetWorld, float value)
@@ -76,15 +76,43 @@ void UFPSingleTon::SetSFXValue(UObject* TargetWorld, float value)
 
 	UGameplayStatics::SetSoundMixClassOverride(TargetWorld, SoundMix, SFXSound, value, 1.0f, 1.0f, true);
 	UGameplayStatics::PushSoundMixModifier(TargetWorld, SoundMix);
-	UGameplayStatics::SaveGameToSlot(SaveGameREF, SAVEGAME_AUDIO_NAME, 0);
+	UGameplayStatics::SaveGameToSlot(SaveGameREF, SAVEGAME_NAME, 0);
+}
+
+void UFPSingleTon::SetLanguageValue(UObject* TargetWorld, ELanguageType value)
+{
+	if (nullptr == SaveGameREF)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s : Can't Find FPGameSave"), *FString(__FUNCTION__));
+		return;
+	}
+
+	SaveGameREF->LanguageValue = value;
+	UGameplayStatics::SaveGameToSlot(SaveGameREF, SAVEGAME_NAME, 0);
 }
 
 void UFPSingleTon::LoadAudioData()
 {
-	if (UGameplayStatics::DoesSaveGameExist(SAVEGAME_AUDIO_NAME, 0))
+	if (UGameplayStatics::DoesSaveGameExist(SAVEGAME_NAME, 0))
 	{
-		SaveGameREF = Cast<UFPGameSave>(UGameplayStatics::LoadGameFromSlot(SAVEGAME_AUDIO_NAME, 0));
+		SaveGameREF = Cast<UFPGameSave>(UGameplayStatics::LoadGameFromSlot(SAVEGAME_NAME, 0));
 		if(nullptr == SaveGameREF)
+		{
+			UE_LOG(LogTemp, Error, TEXT("%s : Can't Cast FPGameSave"), *FString(__FUNCTION__));
+		}
+	}
+	else
+	{
+		SaveGameREF = Cast<UFPGameSave>(UGameplayStatics::CreateSaveGameObject(SaveGameSubclass));
+	}
+}
+
+void UFPSingleTon::LoadLanguageData()
+{
+	if (UGameplayStatics::DoesSaveGameExist(SAVEGAME_NAME, 0))
+	{
+		SaveGameREF = Cast<UFPGameSave>(UGameplayStatics::LoadGameFromSlot(SAVEGAME_NAME, 0));
+		if (nullptr == SaveGameREF)
 		{
 			UE_LOG(LogTemp, Error, TEXT("%s : Can't Cast FPGameSave"), *FString(__FUNCTION__));
 		}

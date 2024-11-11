@@ -10,7 +10,7 @@ public class FarmProject : ModuleRules
 
         PublicIncludePaths.AddRange(new string[] { "FarmProject" });
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "NavigationSystem", "AIModule", "Niagara", "EnhancedInput" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "NavigationSystem", "AIModule", "Niagara", "EnhancedInput", "Slate", "SlateCore" });
 
         PrivateDependencyModuleNames.AddRange(new string[] {
             "GameFeatures",

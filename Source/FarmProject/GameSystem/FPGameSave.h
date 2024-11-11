@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "Info/NameDefine.h"
 #include "FPGameSave.generated.h"
 
 /**
@@ -23,4 +24,7 @@ public:
 
 	UPROPERTY()
 	float SFXValue = 1.0f;
+
+	UPROPERTY()
+	ELanguageType LanguageValue = ELanguageType::Korean;
 };

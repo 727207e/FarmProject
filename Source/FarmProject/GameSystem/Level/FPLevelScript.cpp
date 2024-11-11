@@ -21,6 +21,7 @@ void AFPLevelScript::BeginPlay()
 	UGameplayStatics::SpawnSound2D(this, BackGroundSound);
 
 	UFPSingleTon::Get().LoadAudioData();
+	UFPSingleTon::Get().LoadLanguageData();
 
 	FPSettingUI = CreateWidget<UFPSettingUI>(GetWorld(), UFPSettingUISubclass);
 	if (FPSettingUI)
