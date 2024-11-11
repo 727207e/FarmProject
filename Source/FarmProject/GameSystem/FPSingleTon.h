@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "GameSystem/FPGameSave.h"
+#include "Info/NameDefine.h"
 #include "FPSingleTon.generated.h"
 
 /**
@@ -22,11 +23,13 @@ public:
 
 	void SetMusicValue(UObject* TargetWorld, float value);
 	void SetSFXValue(UObject* TargetWorld, float value);
+	void SetLanguageValue(UObject* TargetWorld, ELanguageType value);
 
 	FORCEINLINE float GetMusicValue() const { return SaveGameREF != nullptr ? SaveGameREF->MusicValue : 1.0f; }
 	FORCEINLINE float GetSFXValue() const { return SaveGameREF != nullptr ? SaveGameREF->SFXValue : 1.0f; }
-	
-	void LoadAudioData();
+	FORCEINLINE ELanguageType GetLanguageValue() const { return SaveGameREF != nullptr ? SaveGameREF->LanguageValue : ELanguageType::Korean; }
+
+	void LoadData();
 
 protected:
 	UPROPERTY()
@@ -43,4 +46,7 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<class UFPGameSave> SaveGameSubclass;
+
+private:
+	FString GetLangStringValue(ELanguageType LangType);
 };

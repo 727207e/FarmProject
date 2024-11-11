@@ -26,10 +26,22 @@ protected:
 	UFUNCTION()
 	void OnSFXSlideValueChange(float value);
 
+	UFUNCTION()
+	void OnLanguageValueChange(FString SelectedItem, ESelectInfo::Type SelectionType);
+
 protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<class USlider> MusicSlider;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<class USlider> SFXSlider;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<class UComboBoxString> ComboBoxLanguage;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<class USoundWave> ClickSound;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<class USoundConcurrency> SoundConcurrnecy;
 };

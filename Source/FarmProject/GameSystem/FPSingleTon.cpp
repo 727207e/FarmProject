@@ -3,6 +3,7 @@
 
 #include "GameSystem/FPSingleTon.h"
 #include "Kismet/GameplayStatics.h"
+#include "Internationalization/Internationalization.h"
 #include "Info/NameDefine.h"
 #include "GameSystem/FPGameSave.h"
 #include "Sound/SoundMix.h"
@@ -61,7 +62,7 @@ void UFPSingleTon::SetMusicValue(UObject* TargetWorld, float value)
 
 	UGameplayStatics::SetSoundMixClassOverride(TargetWorld, SoundMix, MusicSound, value, 1.0f, 1.0f, true);
 	UGameplayStatics::PushSoundMixModifier(TargetWorld, SoundMix);
-	UGameplayStatics::SaveGameToSlot(SaveGameREF, SAVEGAME_AUDIO_NAME, 0);
+	UGameplayStatics::SaveGameToSlot(SaveGameREF, SAVEGAME_NAME, 0);
 }
 
 void UFPSingleTon::SetSFXValue(UObject* TargetWorld, float value)
@@ -76,15 +77,31 @@ void UFPSingleTon::SetSFXValue(UObject* TargetWorld, float value)
 
 	UGameplayStatics::SetSoundMixClassOverride(TargetWorld, SoundMix, SFXSound, value, 1.0f, 1.0f, true);
 	UGameplayStatics::PushSoundMixModifier(TargetWorld, SoundMix);
-	UGameplayStatics::SaveGameToSlot(SaveGameREF, SAVEGAME_AUDIO_NAME, 0);
+	UGameplayStatics::SaveGameToSlot(SaveGameREF, SAVEGAME_NAME, 0);
 }
 
-void UFPSingleTon::LoadAudioData()
+void UFPSingleTon::SetLanguageValue(UObject* TargetWorld, ELanguageType value)
 {
-	if (UGameplayStatics::DoesSaveGameExist(SAVEGAME_AUDIO_NAME, 0))
+	if (nullptr == SaveGameREF)
 	{
-		SaveGameREF = Cast<UFPGameSave>(UGameplayStatics::LoadGameFromSlot(SAVEGAME_AUDIO_NAME, 0));
-		if(nullptr == SaveGameREF)
+		UE_LOG(LogTemp, Error, TEXT("%s : Can't Find FPGameSave"), *FString(__FUNCTION__));
+		return;
+	}
+
+	SaveGameREF->LanguageValue = value;
+	
+	UGameplayStatics::SaveGameToSlot(SaveGameREF, SAVEGAME_NAME, 0);
+	FInternationalization::Get().SetCurrentCulture(GetLangStringValue(value));
+}
+
+void UFPSingleTon::LoadData()
+{
+	if (UGameplayStatics::DoesSaveGameExist(SAVEGAME_NAME, 0))
+	{
+		SaveGameREF = Cast<UFPGameSave>(UGameplayStatics::LoadGameFromSlot(SAVEGAME_NAME, 0));
+		SetLanguageValue(GetWorld(), SaveGameREF->LanguageValue);
+
+		if (nullptr == SaveGameREF)
 		{
 			UE_LOG(LogTemp, Error, TEXT("%s : Can't Cast FPGameSave"), *FString(__FUNCTION__));
 		}
@@ -92,5 +109,18 @@ void UFPSingleTon::LoadAudioData()
 	else
 	{
 		SaveGameREF = Cast<UFPGameSave>(UGameplayStatics::CreateSaveGameObject(SaveGameSubclass));
+	}
+}
+
+FString UFPSingleTon::GetLangStringValue(ELanguageType LangType)
+{
+	switch (LangType)
+	{
+		case ELanguageType::Korean:
+			return "ko";
+		case ELanguageType::English:
+			return "en";
+		default:
+			return "en";
 	}
 }
