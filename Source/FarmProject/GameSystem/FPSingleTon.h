@@ -29,8 +29,7 @@ public:
 	FORCEINLINE float GetSFXValue() const { return SaveGameREF != nullptr ? SaveGameREF->SFXValue : 1.0f; }
 	FORCEINLINE ELanguageType GetLanguageValue() const { return SaveGameREF != nullptr ? SaveGameREF->LanguageValue : ELanguageType::Korean; }
 
-	void LoadAudioData();
-	void LoadLanguageData();
+	void LoadData();
 
 protected:
 	UPROPERTY()
@@ -47,4 +46,7 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<class UFPGameSave> SaveGameSubclass;
+
+private:
+	FString GetLangStringValue(ELanguageType LangType);
 };
