@@ -21,9 +21,21 @@ protected:
 	virtual void PossessedBy(AController* NewController) override;
 
 	UFUNCTION()
-	void MoveTT(float value);
+	void MoveForward();
+	UFUNCTION()
+	void MoveBack();
+	UFUNCTION()
+	void MoveRight();
+	UFUNCTION()
+	void MoveLeft();
+
+	UFUNCTION()
+	void ZoomInOut(float value);
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<class USceneComponent> rootComp;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCameraComponent> CameraComponent;
 

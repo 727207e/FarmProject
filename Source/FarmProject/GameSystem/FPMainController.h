@@ -8,6 +8,9 @@
 #include "FPMainController.generated.h"
 
 DECLARE_DELEGATE(FOnInputTriggeredW);
+DECLARE_DELEGATE(FOnInputTriggeredS);
+DECLARE_DELEGATE(FOnInputTriggeredA);
+DECLARE_DELEGATE(FOnInputTriggeredD);
 DECLARE_DELEGATE_OneParam(FOnInputTriggeredWheel, float);
 
 class UInputAction;
@@ -36,11 +39,21 @@ public:
 	TObjectPtr<UInputAction> MouseWheel;
 
 	FOnInputTriggeredW OnInputTriggeredW;
+	FOnInputTriggeredS OnInputTriggeredS;
+	FOnInputTriggeredA OnInputTriggeredA;
+	FOnInputTriggeredD OnInputTriggeredD;
 	FOnInputTriggeredWheel OnInputTriggeredWheel;
 
 protected:
 	UFUNCTION()
 	void OnInputStartedW();
+	UFUNCTION()
+	void OnInputStartedA();
+	UFUNCTION()
+	void OnInputStartedS();
+	UFUNCTION()
+	void OnInputStartedD();
+	
 	UFUNCTION()
 	void OnInputStartedWheel(const FInputActionValue &InputValue);
 
