@@ -8,13 +8,11 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Math/UnrealMathUtility.h"
+#include "UI/FPHud.h"
 
 // Sets default values
 AFPCameraPawn::AFPCameraPawn()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 	rootComp = CreateDefaultSubobject<USceneComponent>(TEXT("root"));
 	SetRootComponent(rootComp);
 
@@ -32,13 +30,6 @@ AFPCameraPawn::AFPCameraPawn()
 
 }
 
-// Called when the game starts or when spawned
-void AFPCameraPawn::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
 void AFPCameraPawn::PossessedBy(AController* NewController)
 {
 	AFPMainController* FPCont = Cast<AFPMainController>(NewController);
@@ -49,6 +40,12 @@ void AFPCameraPawn::PossessedBy(AController* NewController)
 		FPCont->OnInputTriggeredS.BindUObject(this, &AFPCameraPawn::MoveBack);
 		FPCont->OnInputTriggeredD.BindUObject(this, &AFPCameraPawn::MoveRight);
 		FPCont->OnInputTriggeredA.BindUObject(this, &AFPCameraPawn::MoveLeft);
+
+		AFPHud* MyHud = Cast<AFPHud>(FPCont->GetHUD());
+		if (MyHud)
+		{
+			FPCont->OnInputTriggeredO.BindUObject(MyHud, &AFPHud::OpenStylingUI);
+		}
 	}
 }
 
@@ -83,10 +80,4 @@ void AFPCameraPawn::ZoomInOut(float value)
 	ResultOrthoWidth = FMath::Clamp(ResultOrthoWidth, 500.0f, 3000.0f);
 
 	CameraComponent->OrthoWidth = ResultOrthoWidth;
-}
-
-// Called every frame
-void AFPCameraPawn::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }

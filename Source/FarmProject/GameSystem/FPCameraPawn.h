@@ -14,10 +14,7 @@ class FARMPROJECT_API AFPCameraPawn : public APawn
 public:
 	AFPCameraPawn();
 
-	virtual void Tick(float DeltaTime) override;
-
 protected:
-	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
 
 	UFUNCTION()

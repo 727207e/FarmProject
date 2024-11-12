@@ -55,6 +55,16 @@ void AFPMainController::OnInputStartedD()
 	}
 }
 
+void AFPMainController::OnInputStartedO()
+{
+	if (OnInputTriggeredO.IsBound())
+	{
+		OnInputTriggeredO.Execute();
+	}
+}
+
+
+
 void AFPMainController::OnInputStartedWheel(const FInputActionValue &InputValue)
 { 
 	if (OnInputTriggeredWheel.IsBound()) 
@@ -73,6 +83,7 @@ void AFPMainController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(KeyS, ETriggerEvent::Triggered, this, &AFPMainController::OnInputStartedS);
 		EnhancedInputComponent->BindAction(KeyA, ETriggerEvent::Triggered, this, &AFPMainController::OnInputStartedA);
 		EnhancedInputComponent->BindAction(KeyD, ETriggerEvent::Triggered, this, &AFPMainController::OnInputStartedD);
+		EnhancedInputComponent->BindAction(KeyO, ETriggerEvent::Started, this, &AFPMainController::OnInputStartedO);
 		EnhancedInputComponent->BindAction(MouseWheel, ETriggerEvent::Triggered, this, &AFPMainController::OnInputStartedWheel);
 	}
 }
