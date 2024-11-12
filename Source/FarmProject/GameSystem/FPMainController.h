@@ -52,9 +52,6 @@ public:
 	FOnInputTriggeredMouseRight OnInputTriggeredMouseRight;
 	FOnInputTriggeredWheel OnInputTriggeredWheel;
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void OnBlueprint();
-
 protected:
 	UFUNCTION()
 	void OnInputStartedW();
@@ -72,16 +69,31 @@ protected:
 	UFUNCTION()
 	void OnInputStartedWheel(const FInputActionValue &InputValue);
 
+	virtual void SetupInputComponent() override;
+	virtual void BeginPlay();
+	virtual void Tick(float DeltaTime) override;
 
 protected:
 	uint32 bMoveToMouseCursor : 1;
 
-	virtual void SetupInputComponent() override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<AActor> PlaceableActor;
 
-	virtual void BeginPlay();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AActor> PlaceableActorREF;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UBuildableCheckComponent> BuildableCheckComponentREF;
+
+private:
+	void SetPlacementModeEnable(bool IsEnabled);
+	void SpawnBuilding();
+	void UpdatePlacement();
 
 private:
 	bool bIsTouch;
+	bool bIsPlacementModeEnable = false;
+
 };
 
 
