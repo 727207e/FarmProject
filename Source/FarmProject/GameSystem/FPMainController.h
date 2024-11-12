@@ -12,6 +12,7 @@ DECLARE_DELEGATE(FOnInputTriggeredS);
 DECLARE_DELEGATE(FOnInputTriggeredA);
 DECLARE_DELEGATE(FOnInputTriggeredD);
 DECLARE_DELEGATE(FOnInputTriggeredO);
+DECLARE_DELEGATE(FOnInputTriggeredMouseRight);
 DECLARE_DELEGATE_OneParam(FOnInputTriggeredWheel, float);
 
 class UInputAction;
@@ -39,6 +40,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UInputAction> KeyO;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UInputAction> MouseRightClick;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UInputAction> MouseWheel;
 
 	FOnInputTriggeredW OnInputTriggeredW;
@@ -46,7 +49,11 @@ public:
 	FOnInputTriggeredA OnInputTriggeredA;
 	FOnInputTriggeredD OnInputTriggeredD;
 	FOnInputTriggeredD OnInputTriggeredO;
+	FOnInputTriggeredMouseRight OnInputTriggeredMouseRight;
 	FOnInputTriggeredWheel OnInputTriggeredWheel;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void OnBlueprint();
 
 protected:
 	UFUNCTION()
@@ -59,6 +66,8 @@ protected:
 	void OnInputStartedD();
 	UFUNCTION()
 	void OnInputStartedO();
+	UFUNCTION()
+	void OnInputStartedMouseRight();
 	
 	UFUNCTION()
 	void OnInputStartedWheel(const FInputActionValue &InputValue);

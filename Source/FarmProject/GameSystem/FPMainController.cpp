@@ -63,7 +63,14 @@ void AFPMainController::OnInputStartedO()
 	}
 }
 
-
+void AFPMainController::OnInputStartedMouseRight()
+{
+	OnBlueprint();
+	if (OnInputTriggeredMouseRight.IsBound())
+	{
+		OnInputTriggeredMouseRight.Execute();
+	}
+}
 
 void AFPMainController::OnInputStartedWheel(const FInputActionValue &InputValue)
 { 
@@ -71,6 +78,10 @@ void AFPMainController::OnInputStartedWheel(const FInputActionValue &InputValue)
 	{ 
 		OnInputTriggeredWheel.Execute(InputValue.Get<float>());
 	}
+}
+void AFPMainController::OnBlueprint_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Called from C++"));
 }
 
 void AFPMainController::SetupInputComponent()
@@ -84,6 +95,7 @@ void AFPMainController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(KeyA, ETriggerEvent::Triggered, this, &AFPMainController::OnInputStartedA);
 		EnhancedInputComponent->BindAction(KeyD, ETriggerEvent::Triggered, this, &AFPMainController::OnInputStartedD);
 		EnhancedInputComponent->BindAction(KeyO, ETriggerEvent::Started, this, &AFPMainController::OnInputStartedO);
+		EnhancedInputComponent->BindAction(MouseRightClick, ETriggerEvent::Started, this, &AFPMainController::OnInputStartedMouseRight);
 		EnhancedInputComponent->BindAction(MouseWheel, ETriggerEvent::Triggered, this, &AFPMainController::OnInputStartedWheel);
 	}
 }

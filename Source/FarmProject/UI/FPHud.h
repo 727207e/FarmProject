@@ -19,6 +19,7 @@ public:
 
 	UFUNCTION()
 	void OpenStylingUI();
+
 protected:
 	virtual void BeginPlay() override;
 
