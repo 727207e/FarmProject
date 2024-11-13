@@ -8,7 +8,6 @@
 
 AMainFPLevelScript::AMainFPLevelScript()
 {
-	PrimaryActorTick.bCanEverTick = true;
 }
 
 void AMainFPLevelScript::BeginPlay()
@@ -25,12 +24,6 @@ void AMainFPLevelScript::BeginPlay()
 	}
 }
 
-void AMainFPLevelScript::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 void AMainFPLevelScript::ActiveBuildMode()
 {
     if (GridManager)
@@ -44,6 +37,7 @@ void AMainFPLevelScript::DeactiveBuildMode()
 {
 	if (GridManager)
 	{
+		GridManager->DeactivGrid();
 		SetPlacementModeEnable(false);
 	}
 }
@@ -92,6 +86,11 @@ void AMainFPLevelScript::SetPlacementModeEnable(bool IsEnabled)
 
 void AMainFPLevelScript::SpawnBuilding()
 {
+	if (!bIsPlacementModeEnable)
+	{
+		return;
+	}
+
 	if (PlaceableActor != nullptr)
 	{
 		UBuildableCheckComponent* TargetAC = PlaceableActor->GetComponentByClass<UBuildableCheckComponent>();

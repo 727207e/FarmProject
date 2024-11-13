@@ -10,13 +10,29 @@ UGridManager::UGridManager()
 
 void UGridManager::StartGrid()
 {
-    PopulateGrid();
+    if (GridArray.IsEmpty())
+    {
+        PopulateGrid();
+    }
+    else
+    {
+        for (AActor* GridActor : GridArray)
+        {
+            GridActor->SetActorHiddenInGame(false);
+        }
+    }
+}
+
+void UGridManager::DeactivGrid()
+{
+    for (AActor* GridActor : GridArray)
+    {
+        GridActor->SetActorHiddenInGame(true);
+    }
 }
 
 void UGridManager::PopulateGrid()
 {
-    GridArray.Empty();
-
     float WorldOffset = (GridSize * WorldGridSize * 0.5f) - (WorldGridSize * 0.5f);
 
     for (int32 y = 0; y < GridSize; y++)

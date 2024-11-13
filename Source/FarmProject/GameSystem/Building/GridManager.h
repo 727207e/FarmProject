@@ -15,6 +15,7 @@ public:
 	UGridManager();
 
 	void StartGrid();
+	void DeactivGrid();
 	FVector GetClosestGridPosition(FVector InPoition);
 
 public:
