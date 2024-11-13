@@ -6,6 +6,8 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameSystem/Building/GridManager.h"
 #include "GameSystem/Building/ActorComponent/BuildableCheckComponent.h"
 
 AFPMainController::AFPMainController()
@@ -117,7 +119,9 @@ void AFPMainController::UpdatePlacement()
 
 			if (bHit && PlaceableActor)
 			{
-				PlaceableActor->SetActorLocation(HitResult.Location);
+				AActor* Manager = UGameplayStatics::GetActorOfClass(GetWorld(), AGridManager::StaticClass());
+				AGridManager* GM = Cast<AGridManager>(Manager);
+				PlaceableActor->SetActorLocation(GM->GetClosestGridPosition(HitResult.Location));
 			}
 		}
 	}
