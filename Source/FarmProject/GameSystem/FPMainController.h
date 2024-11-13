@@ -71,28 +71,9 @@ protected:
 
 	virtual void SetupInputComponent() override;
 	virtual void BeginPlay();
-	virtual void Tick(float DeltaTime) override;
 
 protected:
 	uint32 bMoveToMouseCursor : 1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<AActor> PlaceableActor;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<AActor> PlaceableActorREF;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<class UBuildableCheckComponent> BuildableCheckComponentREF;
-
-private:
-	void SetPlacementModeEnable(bool IsEnabled);
-	void SpawnBuilding();
-	void UpdatePlacement();
-
-private:
-	bool bIsTouch;
-	bool bIsPlacementModeEnable = false;
 
 };
 

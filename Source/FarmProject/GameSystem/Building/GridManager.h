@@ -3,43 +3,38 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Components/ActorComponent.h"
 #include "GridManager.generated.h"
 
-UCLASS()
-class FARMPROJECT_API AGridManager : public AActor
+UCLASS(Blueprintable)
+class FARMPROJECT_API UGridManager : public UActorComponent
 {
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
-	AGridManager();
+	UGridManager();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	void StartGrid();
+	FVector GetClosestGridPosition(FVector InPoition);
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-
-	//////////////////////////////////////////////////
-public :
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 GridSize = 5;
+	int32 GridSize = 30;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 WorldGridSize = 1000;
+	int32 WorldGridSize = 100;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SphereRadius = 100.0f;
-
-	TArray<TObjectPtr<AActor>> GridArray;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LevelCenterX = 1500.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LevelCenterY = 1500.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class AGridCell> GridCellREF;
 
-	float WorldOffset;
-
+private:
 	void PopulateGrid();
-	FVector GetClosestGridPosition(FVector InPoition);
+
+private:
+	TArray<TObjectPtr<AActor>> GridArray;
 };

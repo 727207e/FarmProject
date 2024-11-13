@@ -4,41 +4,26 @@
 #include "GameSystem/Building/GridManager.h"
 #include "GameSystem/Building/GridCell.h"
 
-// Sets default values
-AGridManager::AGridManager()
+UGridManager::UGridManager()
 {
-    // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-    PrimaryActorTick.bCanEverTick = true;
-
 }
 
-// Called when the game starts or when spawned
-void AGridManager::BeginPlay()
+void UGridManager::StartGrid()
 {
-    Super::BeginPlay();
-
     PopulateGrid();
 }
 
-// Called every frame
-void AGridManager::Tick(float DeltaTime)
-{
-    Super::Tick(DeltaTime);
-
-}
-
-void AGridManager::PopulateGrid()
+void UGridManager::PopulateGrid()
 {
     GridArray.Empty();
 
-    WorldOffset = (GridSize * WorldGridSize * 0.5f) - (WorldGridSize * 0.5f);
-    FVector Pos = GetActorLocation();
+    float WorldOffset = (GridSize * WorldGridSize * 0.5f) - (WorldGridSize * 0.5f);
 
     for (int32 y = 0; y < GridSize; y++)
     {
         for (int32 x = 0; x < GridSize; x++)
         {
-            FTransform resultTransform(FVector(Pos.X + WorldGridSize * x - WorldOffset, Pos.Y + WorldGridSize * y - WorldOffset, 0.0f));
+            FTransform resultTransform(FVector(LevelCenterX + WorldGridSize * x - WorldOffset, LevelCenterY + WorldGridSize * y - WorldOffset, 0.0f));
 
             if (GridCellREF == nullptr)
             {
@@ -53,12 +38,12 @@ void AGridManager::PopulateGrid()
     }
 }
 
-FVector AGridManager::GetClosestGridPosition(FVector InPoition)
+
+FVector UGridManager::GetClosestGridPosition(FVector InPoition)
 {
     FCollisionShape SphereShape = FCollisionShape::MakeSphere(SphereRadius);
     TArray<FHitResult> HitResults; HitResults;
 
-    // Sphere Trace ½ÇÇà
     bool bHit = GetWorld()->SweepMultiByChannel(
         HitResults,
         InPoition,

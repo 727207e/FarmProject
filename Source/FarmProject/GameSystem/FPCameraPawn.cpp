@@ -7,7 +7,9 @@
 #include "Components/SceneComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
+#include "GameSystem/Level/Interface/BuildManagerInterface.h"
 #include "Math/UnrealMathUtility.h"
+#include "Engine/LevelScriptActor.h"
 #include "UI/FPHud.h"
 
 // Sets default values
@@ -27,7 +29,6 @@ AFPCameraPawn::AFPCameraPawn()
 	CameraComponent->bUsePawnControlRotation = false;
 
 	FloatMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("FloatingMovemet"));
-
 }
 
 void AFPCameraPawn::PossessedBy(AController* NewController)
@@ -45,6 +46,15 @@ void AFPCameraPawn::PossessedBy(AController* NewController)
 		if (MyHud)
 		{
 			FPCont->OnInputTriggeredO.BindUObject(MyHud, &AFPHud::OpenStylingUI);
+		}
+
+		IBuildManagerInterface* MyBuildInterface = Cast<IBuildManagerInterface>(GetWorld()->GetLevelScriptActor());
+		if (MyBuildInterface)
+		{
+			FPCont->OnInputTriggeredMouseRight.BindLambda([MyBuildInterface]()
+				{
+					MyBuildInterface->SpawnBuilding();
+				});
 		}
 	}
 }
@@ -75,7 +85,6 @@ void AFPCameraPawn::MoveLeft()
 
 void AFPCameraPawn::ZoomInOut(float value)
 {
-	
 	float ResultOrthoWidth = CameraComponent->OrthoWidth + (value * -100.0f);
 	ResultOrthoWidth = FMath::Clamp(ResultOrthoWidth, 500.0f, 3000.0f);
 

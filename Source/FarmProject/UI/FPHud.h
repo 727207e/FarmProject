@@ -30,4 +30,9 @@ protected:
 private:
 	UPROPERTY()
 	TObjectPtr<UUserWidget> StylingUI;
+
+	UPROPERTY()
+	TScriptInterface<class IBuildManagerInterface> BuildManager;
+
+	//인벤토리 가져오기
 };
