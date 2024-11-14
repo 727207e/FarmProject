@@ -33,7 +33,7 @@ protected:
 	TObjectPtr<class UGridManager> GridManager;
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<AActor> PlaceableActor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -41,6 +41,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class UBuildableCheckComponent> BuildableCheckComponentREF;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UClickableComponent> ClickableComponentREF;
 
 	UPROPERTY()
 	TObjectPtr<class APlayerController> PlayerCont;

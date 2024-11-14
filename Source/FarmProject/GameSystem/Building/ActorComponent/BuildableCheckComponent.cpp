@@ -2,6 +2,7 @@
 
 
 #include "GameSystem/Building/ActorComponent/BuildableCheckComponent.h"
+#include "GameSystem/Building/GridCell.h"
 #include "GameFramework/Actor.h"
 
 UBuildableCheckComponent::UBuildableCheckComponent()
@@ -14,34 +15,68 @@ void UBuildableCheckComponent::BeginPlay()
 
     GetOwner()->OnActorBeginOverlap.AddDynamic(this, &UBuildableCheckComponent::OnActorBeginOverlap);
     GetOwner()->OnActorEndOverlap.AddDynamic(this, &UBuildableCheckComponent::OnActorEndOverlap);
-    UpdateState();
 }
 
 void UBuildableCheckComponent::OnActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-    UpdateState();
+    AGridCell* TargetGridCell = Cast<AGridCell>(OtherActor);
+    if (TargetGridCell)
+    {
+        GridArray.Add(TargetGridCell);
+    }
+
+    if (!GridArray.IsEmpty())
+    {
+        bool bTrigger = true;
+        for (AGridCell* Grid : GridArray)
+        {
+            EBuildState TargetState = Grid->GetBuildState();
+            if (TargetState == EBuildState::OverlapBuilding)
+            {
+                bTrigger = false;
+                break;
+            }
+        }
+
+        UpdateState(bTrigger);
+        bIsPlacementValid = bTrigger;
+    }
 }
 
 void UBuildableCheckComponent::OnActorEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-    UpdateState();
+    AGridCell* TargetGridCell = Cast<AGridCell>(OtherActor);
+    if (TargetGridCell)
+    {
+        int32 TargetNum = GridArray.Find(TargetGridCell);
+        GridArray.RemoveAt(TargetNum);
+        TargetGridCell->UpdateGridState(EBuildState::Wait);
+    }
 }
 
-void UBuildableCheckComponent::UpdateState()
+void UBuildableCheckComponent::UpdateState(bool IsOverlapActors)
 {
-	TSet<AActor*> OverlapActors;
-	GetOwner()->GetOverlappingActors(OverlapActors, AActor::StaticClass());
-    bIsPlacementValid = OverlapActors.IsEmpty();
-	
     TArray<UStaticMeshComponent*> StaticMeshComponents;
     GetOwner()->GetComponents<UStaticMeshComponent>(StaticMeshComponents);
-    for (UStaticMeshComponent* MeshComponent : StaticMeshComponents)
+
+    if (IsOverlapActors)
     {
-        if (bIsPlacementValid)
+        for (AGridCell* Grid : GridArray)
+        {
+            Grid->UpdateGridState(EBuildState::Buildable);
+        }
+        for (UStaticMeshComponent* MeshComponent : StaticMeshComponents)
         {
             MeshComponent->SetMaterial(0, BuilableMat);
         }
-        else
+    }
+    else
+    {
+        for (AGridCell* Grid : GridArray)
+        {
+            Grid->UpdateGridState(EBuildState::NotBuildable);
+        }
+        for (UStaticMeshComponent* MeshComponent : StaticMeshComponents)
         {
             MeshComponent->SetMaterial(0, NotBuilableMat);
         }

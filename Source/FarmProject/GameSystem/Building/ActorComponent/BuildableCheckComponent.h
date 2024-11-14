@@ -34,6 +34,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<class UMaterial> NotBuilableMat;
 
+	UPROPERTY()
+	TArray<TObjectPtr<class AGridCell>> GridArray;
+
 private:
-	void UpdateState();
+	void UpdateState(bool IsOverlapActors);
 };

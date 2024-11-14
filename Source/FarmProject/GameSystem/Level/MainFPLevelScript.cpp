@@ -4,6 +4,7 @@
 #include "GameSystem/Level/MainFPLevelScript.h"
 #include "GameSystem/Building/GridManager.h"
 #include "GameSystem/Building/ActorComponent/BuildableCheckComponent.h"
+#include "GameSystem/Building/ActorComponent/ClickableComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 AMainFPLevelScript::AMainFPLevelScript()
@@ -58,7 +59,6 @@ void AMainFPLevelScript::SetPlacementModeEnable(bool IsEnabled)
 
 		PlaceableActor = GetWorld()->SpawnActor<AActor>(PlaceableActorREF, SpawnTransform, SpawnParameters);
 
-		//여기서 PlaceableActor의 ClickableAC 를 삭제하는 로직이 있었음.
 		if (PlaceableActor && *BuildableCheckComponentREF)
 		{
 			UBuildableCheckComponent* BuildableCheck = NewObject<UBuildableCheckComponent>(PlaceableActor, BuildableCheckComponentREF);
@@ -99,7 +99,17 @@ void AMainFPLevelScript::SpawnBuilding()
 			FActorSpawnParameters SpawnParameters;
 			SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-			GetWorld()->SpawnActor<AActor>(PlaceableActorREF, PlaceableActor->GetTransform(), SpawnParameters);
+			AActor* BuildActor = GetWorld()->SpawnActor<AActor>(PlaceableActorREF, PlaceableActor->GetTransform(), SpawnParameters);
+
+			if(BuildActor && *ClickableComponentREF)
+			{
+				UClickableComponent* Clickable= NewObject<UClickableComponent>(BuildActor, ClickableComponentREF);
+
+				if (Clickable)
+				{
+					Clickable->RegisterComponent();
+				}
+			}
 		}
 	}
 }
