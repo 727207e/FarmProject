@@ -24,11 +24,6 @@ void UFPStylingUI::NativeConstruct()
 
 void UFPStylingUI::ActiveStylingUI()
 {
-	if (FPLevel)
-	{
-		FPLevel->SetPlacementModeEnable(true);
-	}
-
 	GetInventory();
 	GenerateBuildingButtonUI();
 }
@@ -57,6 +52,22 @@ void UFPStylingUI::GenerateBuildingButtonUI()
 		if (NewButton)
 		{
 			NewButton->ButtonInit(InfoArray[i]);
+
+			NewButton->OnBuildingButtonActive.BindLambda([this](UFPBuildingButtonUI& ButtonUI)
+				{
+					if (FPLevel)
+					{
+						FPLevel->SetPlacementModeEnable(true);
+					}
+				});
+			NewButton->OnBuildingButtonDeactive.BindLambda([this](UFPBuildingButtonUI& ButtonUI)
+				{
+					if (FPLevel)
+					{
+						FPLevel->SetPlacementModeEnable(false);
+					}
+				});
+
 			BuildingButtonArray.Add(NewButton);
 			if (BuildingScrollBox)
 			{
