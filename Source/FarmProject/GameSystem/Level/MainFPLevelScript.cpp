@@ -30,7 +30,6 @@ void AMainFPLevelScript::ActiveBuildMode()
     if (GridManager)
     {
         GridManager->StartGrid();
-        SetPlacementModeEnable(true);
     }
 }
 
@@ -39,7 +38,6 @@ void AMainFPLevelScript::DeactiveBuildMode()
 	if (GridManager)
 	{
 		GridManager->DeactivGrid();
-		SetPlacementModeEnable(false);
 	}
 }
 

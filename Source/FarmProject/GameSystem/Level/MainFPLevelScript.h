@@ -22,6 +22,8 @@ public:
 	virtual void DeactiveBuildMode() override;
 	virtual void SpawnBuilding() override;
 
+	void SetPlacementModeEnable(bool IsEnabled);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -52,7 +54,6 @@ protected:
 	FTimerHandle TimerHandle;
 
 private:
-	void SetPlacementModeEnable(bool IsEnabled);
 	void UpdatePlacement();
 
 private:
