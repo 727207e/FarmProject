@@ -21,6 +21,9 @@ public:
 	void ActiveStylingUI();
 	void DeactiveStylingUI();
 
+	UFUNCTION()
+	void ActiveEditBuildMode(class UClickableComponent* ClickableComponent);
+
 protected:
 	virtual void NativeConstruct() override;
 
@@ -34,6 +37,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<TObjectPtr<class UFPBuildingButtonUI>> BuildingButtonArray;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<class UButton> CancelButton;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<class UFPEditBuildingUI> EditBuildingUI;
 private:
 	void GetInventory();
 	void GenerateBuildingButtonUI();
@@ -41,5 +49,6 @@ private:
 private:
 	TObjectPtr<class AMainFPLevelScript> FPLevel;
 	TArray<FBuildingInfo> InfoArray;
+
 	//UFPBuildingButtonUI가 가지고 있는 데이터 가져오기
 };

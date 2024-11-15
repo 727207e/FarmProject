@@ -15,9 +15,12 @@ class FARMPROJECT_API UClickableComponent : public UActorComponent
 public:	
 	UClickableComponent();
 
+	void OnClick();
+
 protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY()
 	TSet<TObjectPtr<class AGridCell>> OverlappedGridSet;
+
 };

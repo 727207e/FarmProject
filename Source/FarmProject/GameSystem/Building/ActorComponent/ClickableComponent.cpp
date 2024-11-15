@@ -3,9 +3,15 @@
 
 #include "GameSystem/Building/ActorComponent/ClickableComponent.h"
 #include "GameSystem/Building/GridCell.h"
+#include "GameSystem/Level/MainFPLevelScript.h"
 
 UClickableComponent::UClickableComponent()
 {
+}
+
+void UClickableComponent::OnClick()
+{
+
 }
 
 

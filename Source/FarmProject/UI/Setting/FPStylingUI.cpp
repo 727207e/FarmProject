@@ -5,9 +5,14 @@
 #include "GameSystem/Level/MainFPLevelScript.h"
 #include "Components/ScrollBox.h"
 #include "PaperSprite.h"
+#include "Components/Button.h"
+#include "GameSystem/Building/ActorComponent/ClickableComponent.h"
+#include "UI/Building/FPEditBuildingUI.h"
 #include "UI/Building/FPBuildingButtonUI.h"
 
 #define BuildingScrollBoxUIName TEXT("BuildingScrollBox_UI")
+#define EditBuildingUIName TEXT("EditBuilding_UI")
+#define StylingUIShutDownName TEXT("StylingUIShutDown_UI")
 
 UFPStylingUI::UFPStylingUI(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -15,11 +20,19 @@ UFPStylingUI::UFPStylingUI(const FObjectInitializer& ObjectInitializer) : Super(
 
 void UFPStylingUI::NativeConstruct()
 {
+	Super::NativeConstruct();
+
 	if (FPLevel == nullptr)
 	{
 		FPLevel = Cast<AMainFPLevelScript>(GetWorld()->GetLevelScriptActor());
 	}
 	BuildingScrollBox = Cast<UScrollBox>(GetWidgetFromName(BuildingScrollBoxUIName));
+	CancelButton = Cast<UButton>(GetWidgetFromName(StylingUIShutDownName));
+	EditBuildingUI = Cast<UFPEditBuildingUI>(GetWidgetFromName(EditBuildingUIName));
+	if (EditBuildingUI != nullptr)
+	{
+		EditBuildingUI->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 void UFPStylingUI::ActiveStylingUI()
@@ -33,6 +46,18 @@ void UFPStylingUI::DeactiveStylingUI()
 	if (FPLevel)
 	{
 		FPLevel->SetPlacementModeEnable(false);
+	}
+}
+
+void UFPStylingUI::ActiveEditBuildMode(UClickableComponent* ClickableComponent)
+{
+	if (FPLevel->GetIsBuildMode())
+	{
+		if (!FPLevel->GetIsPlacementMode())
+		{
+			EditBuildingUI->SetVisibility(ESlateVisibility::Visible);
+			EditBuildingUI->ActiveEditBuildUI(ClickableComponent);
+		}
 	}
 }
 

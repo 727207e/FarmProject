@@ -23,6 +23,8 @@ public:
 	virtual void SpawnBuilding() override;
 
 	void SetPlacementModeEnable(bool IsEnabled);
+	FORCEINLINE bool GetIsPlacementMode() { return bIsPlacementModeEnable; }
+	FORCEINLINE bool GetIsBuildMode() { return bIsBuildModeEnable; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -59,5 +61,6 @@ private:
 private:
 	bool bIsTouch;
 	bool bIsPlacementModeEnable = false;
+	bool bIsBuildModeEnable = false;
 
 };

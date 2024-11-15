@@ -27,6 +27,7 @@ void AMainFPLevelScript::BeginPlay()
 
 void AMainFPLevelScript::ActiveBuildMode()
 {
+	bIsBuildModeEnable = true;
     if (GridManager)
     {
         GridManager->StartGrid();
@@ -35,6 +36,7 @@ void AMainFPLevelScript::ActiveBuildMode()
 
 void AMainFPLevelScript::DeactiveBuildMode()
 {
+	bIsBuildModeEnable = false;
 	if (GridManager)
 	{
 		GridManager->DeactivGrid();

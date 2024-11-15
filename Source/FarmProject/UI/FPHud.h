@@ -6,6 +6,8 @@
 #include "GameFramework/HUD.h"
 #include "FPHud.generated.h"
 
+class UClickableComponent;
+DECLARE_DELEGATE_OneParam(FOnClickClickabeComp, UClickableComponent*)
 /**
  * 
  */
@@ -19,6 +21,8 @@ public:
 
 	UFUNCTION()
 	void OpenStylingUI();
+
+	FOnClickClickabeComp OnClickClickableComp;
 
 protected:
 	virtual void BeginPlay() override;

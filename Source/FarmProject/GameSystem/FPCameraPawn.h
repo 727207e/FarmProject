@@ -25,6 +25,8 @@ protected:
 	void MoveRight();
 	UFUNCTION()
 	void MoveLeft();
+	UFUNCTION()
+	void ClickableClick();
 
 	UFUNCTION()
 	void ZoomInOut(float value);
@@ -38,6 +40,15 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USpringArmComponent> CameraBoom;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<class AFPMainController> FPCont;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<class AMainFPLevelScript> MainLevel;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<class AFPHud> MyHud;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<class UFloatingPawnMovement> FloatMovement;

@@ -5,6 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Engine/LevelScriptActor.h"
 #include "GameSystem/Level/Interface/BuildManagerInterface.h"
+#include "GameSystem/Building/ActorComponent/ClickableComponent.h"
 #include "UI/Setting/FPStylingUI.h"
 
 AFPHud::AFPHud()
@@ -45,6 +46,8 @@ void AFPHud::BeginPlay()
         {
             StylingUI->AddToViewport();
             StylingUI->SetVisibility(ESlateVisibility::Hidden);
+
+            OnClickClickableComp.BindUObject(StylingUI, &UFPStylingUI::ActiveEditBuildMode);
         }
     }
 
