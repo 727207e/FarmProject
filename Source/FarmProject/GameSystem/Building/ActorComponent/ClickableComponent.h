@@ -16,6 +16,7 @@ public:
 	UClickableComponent();
 
 	void OnClick();
+	void OnDestroySelf();
 
 protected:
 	virtual void BeginPlay() override;

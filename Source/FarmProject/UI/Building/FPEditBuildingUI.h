@@ -21,6 +21,18 @@ public:
 	void DeactiveEditBuildUI();
 
 protected:
+	UFUNCTION()
+	void OnLeftButtonClicked();
+	UFUNCTION()
+	void OnRightButtonClicked();
+	UFUNCTION()
+	void OnGoInvenButtonClicked();
+	UFUNCTION()
+	void OnMoveButtonClicked();
+	UFUNCTION()
+	void OnCancelButtonClicked();
+
+protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<class UButton> LeftButton;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

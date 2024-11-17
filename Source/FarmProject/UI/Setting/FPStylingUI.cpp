@@ -55,7 +55,6 @@ void UFPStylingUI::ActiveEditBuildMode(UClickableComponent* ClickableComponent)
 	{
 		if (!FPLevel->GetIsPlacementMode())
 		{
-			EditBuildingUI->SetVisibility(ESlateVisibility::Visible);
 			EditBuildingUI->ActiveEditBuildUI(ClickableComponent);
 		}
 	}
@@ -65,7 +64,7 @@ void UFPStylingUI::GetInventory()
 {
 	UPaperSprite* LoadedSprite = LoadObject<UPaperSprite>(nullptr, TEXT("/Game/DownloadAsset/Ground_Game_UI/Sprites/Buttons/Active/Button__14__Sprite.Button__14__Sprite"));
 	UTexture2D* SpriteTexture = LoadedSprite->GetBakedTexture(); 
-	InfoArray.Add(FBuildingInfo(FText::FromString("TESTBuild"), 1, SpriteTexture));
+	AddInfoArray(FBuildingInfo(FText::FromString("TESTBuild"), 1, SpriteTexture));
 }
 
 void UFPStylingUI::GenerateBuildingButtonUI()

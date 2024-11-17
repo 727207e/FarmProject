@@ -21,6 +21,8 @@ public:
 	void ActiveStylingUI();
 	void DeactiveStylingUI();
 
+	FORCEINLINE void AddInfoArray(FBuildingInfo Info) { InfoArray.Add(Info); }
+
 	UFUNCTION()
 	void ActiveEditBuildMode(class UClickableComponent* ClickableComponent);
 
