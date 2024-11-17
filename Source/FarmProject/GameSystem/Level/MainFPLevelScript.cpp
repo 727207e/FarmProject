@@ -43,7 +43,7 @@ void AMainFPLevelScript::DeactiveBuildMode()
 	}
 }
 
-void AMainFPLevelScript::SetPlacementModeEnable(bool IsEnabled)
+void AMainFPLevelScript::SetPlacementModeEnable(bool IsEnabled, TSubclassOf<UObject> TargetBuilding)
 {
 	if (bIsPlacementModeEnable == IsEnabled)
 	{
@@ -51,7 +51,9 @@ void AMainFPLevelScript::SetPlacementModeEnable(bool IsEnabled)
 	}
 
 	bIsPlacementModeEnable = IsEnabled;
-	if (bIsPlacementModeEnable)
+	PlaceableActorREF = TargetBuilding;
+
+	if (bIsPlacementModeEnable && PlaceableActorREF)
 	{
 		FTransform SpawnTransform(FVector(0, 0, -1000000.0f));
 		FActorSpawnParameters SpawnParameters;
@@ -91,7 +93,7 @@ void AMainFPLevelScript::SpawnBuilding()
 		return;
 	}
 
-	if (PlaceableActor != nullptr)
+	if (PlaceableActor && PlaceableActorREF)
 	{
 		UBuildableCheckComponent* TargetAC = PlaceableActor->GetComponentByClass<UBuildableCheckComponent>();
 		if (TargetAC != nullptr && TargetAC->bIsPlacementValid)
@@ -108,6 +110,11 @@ void AMainFPLevelScript::SpawnBuilding()
 				if (Clickable)
 				{
 					Clickable->RegisterComponent();
+				}
+
+				if (OnSpawnBuilding.IsBound())
+				{
+					OnSpawnBuilding.Execute();
 				}
 			}
 		}

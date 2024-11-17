@@ -14,7 +14,7 @@ UFPBuildingButtonUI::UFPBuildingButtonUI(const FObjectInitializer& ObjectInitial
 {
 }
 
-void UFPBuildingButtonUI::ButtonInit(FBuildingInfo BuildingInfo)
+void UFPBuildingButtonUI::ButtonInit(int32 CurrentCount, UTexture2D* Image, FText Name)
 {
 	FindUI();
 
@@ -23,17 +23,26 @@ void UFPBuildingButtonUI::ButtonInit(FBuildingInfo BuildingInfo)
 	FSlateBrush HoveredBrush = ButtonStyle.Hovered;
 	FSlateBrush PressedBrush = ButtonStyle.Pressed;
 
-	NormalBrush.SetResourceObject(BuildingInfo.Image);
-	HoveredBrush.SetResourceObject(BuildingInfo.Image);
-	PressedBrush.SetResourceObject(BuildingInfo.Image);
+	NormalBrush.SetResourceObject(Image);
+	HoveredBrush.SetResourceObject(Image);
+	PressedBrush.SetResourceObject(Image);
 
 	ButtonStyle.Normal = NormalBrush;
 	ButtonStyle.Hovered = HoveredBrush;
 	ButtonStyle.Pressed = PressedBrush;
 
 	BuildingButton->SetStyle(ButtonStyle);
-	BuildingNameText->SetText(BuildingInfo.BuildingName);
-	CountText->SetText(FText::AsNumber(BuildingInfo.BuildingCount));
+	BuildingNameText->SetText(Name);
+	CountText->SetText(FText::AsNumber(CurrentCount));
+}
+
+void UFPBuildingButtonUI::ChangeBuildingCount(int32 Num)
+{
+	FText CurrentText = CountText->GetText();
+	int32 CurrentValue = FCString::Atoi(*CurrentText.ToString());
+	int32 NewValue = CurrentValue + Num;
+
+	CountText->SetText(FText::AsNumber(NewValue));
 }
 
 void UFPBuildingButtonUI::NativeConstruct()
@@ -49,14 +58,14 @@ void UFPBuildingButtonUI::OnButtonClicked()
 	{
 		if (OnBuildingButtonActive.IsBound())
 		{
-			OnBuildingButtonActive.Execute(*this);
+			OnBuildingButtonActive.Execute();
 		}
 	}
 	else
 	{
 		if (OnBuildingButtonDeactive.IsBound())
 		{
-			OnBuildingButtonDeactive.Execute(*this);
+			OnBuildingButtonDeactive.Execute();
 		}
 	}
 }

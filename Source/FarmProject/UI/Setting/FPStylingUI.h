@@ -21,8 +21,6 @@ public:
 	void ActiveStylingUI();
 	void DeactiveStylingUI();
 
-	FORCEINLINE void AddInfoArray(FBuildingInfo Info) { InfoArray.Add(Info); }
-
 	UFUNCTION()
 	void ActiveEditBuildMode(class UClickableComponent* ClickableComponent);
 
@@ -36,6 +34,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class UFPBuildingButtonUI> BuildingButtonREF;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UObject> ttttt;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<TObjectPtr<class UFPBuildingButtonUI>> BuildingButtonArray;
 
@@ -44,13 +45,14 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<class UFPEditBuildingUI> EditBuildingUI;
+
+	UPROPERTY()
+	TObjectPtr<class UFPGameInstance> GameInst;
+
 private:
 	void GetInventory();
 	void GenerateBuildingButtonUI();
 
 private:
 	TObjectPtr<class AMainFPLevelScript> FPLevel;
-	TArray<FBuildingInfo> InfoArray;
-
-	//UFPBuildingButtonUI가 가지고 있는 데이터 가져오기
 };

@@ -7,8 +7,10 @@
 #include "PaperSprite.h"
 #include "Components/Button.h"
 #include "GameSystem/Building/ActorComponent/ClickableComponent.h"
+#include "GameSystem/Data/ItemDataBase.h"
+#include "GameSystem/Data/BuildingItemData.h"
+#include "GameSystem/Level/FPGameInstance.h"
 #include "UI/Building/FPEditBuildingUI.h"
-#include "UI/Building/FPBuildingButtonUI.h"
 
 #define BuildingScrollBoxUIName TEXT("BuildingScrollBox_UI")
 #define EditBuildingUIName TEXT("EditBuilding_UI")
@@ -33,6 +35,8 @@ void UFPStylingUI::NativeConstruct()
 	{
 		EditBuildingUI->SetVisibility(ESlateVisibility::Hidden);
 	}
+
+
 }
 
 void UFPStylingUI::ActiveStylingUI()
@@ -45,7 +49,7 @@ void UFPStylingUI::DeactiveStylingUI()
 {
 	if (FPLevel)
 	{
-		FPLevel->SetPlacementModeEnable(false);
+		FPLevel->SetPlacementModeEnable(false, nullptr);
 	}
 }
 
@@ -62,33 +66,48 @@ void UFPStylingUI::ActiveEditBuildMode(UClickableComponent* ClickableComponent)
 
 void UFPStylingUI::GetInventory()
 {
+	GameInst = Cast<UFPGameInstance>(GetGameInstance());
+
+///////테스트 코드 - 인벤토리에 강제로 아이템 주입
+	TWeakObjectPtr<UBuildingItemData> NewItemData = NewObject<UBuildingItemData>(this);
+	NewItemData->CurrentCount = 1;
+	NewItemData->MaxCount = 1;
 	UPaperSprite* LoadedSprite = LoadObject<UPaperSprite>(nullptr, TEXT("/Game/DownloadAsset/Ground_Game_UI/Sprites/Buttons/Active/Button__14__Sprite.Button__14__Sprite"));
-	UTexture2D* SpriteTexture = LoadedSprite->GetBakedTexture(); 
-	AddInfoArray(FBuildingInfo(FText::FromString("TESTBuild"), 1, SpriteTexture));
+	UTexture2D* SpriteTexture = LoadedSprite->GetBakedTexture();
+	NewItemData->Image = SpriteTexture;
+	NewItemData->Name = FText::FromString("TESTBuild");
+	NewItemData->BlueprintObject = ttttt;
+	GameInst->AddInventory(NewItemData);
 }
 
 void UFPStylingUI::GenerateBuildingButtonUI()
 {
-	for (int32 i = 0; i < InfoArray.Num(); ++i)
+	for (int32 i = 0; i < GameInst->BuildingInventory.Num(); ++i)
 	{
 		UFPBuildingButtonUI* NewButton = CreateWidget<UFPBuildingButtonUI>(this, BuildingButtonREF);
-
+		TWeakObjectPtr<UBuildingItemData> data = GameInst->BuildingInventory[i];
 		if (NewButton)
 		{
-			NewButton->ButtonInit(InfoArray[i]);
+			NewButton->ButtonInit(data->CurrentCount, data->Image, data->Name);
 
-			NewButton->OnBuildingButtonActive.BindLambda([this](UFPBuildingButtonUI& ButtonUI)
+			NewButton->OnBuildingButtonActive.BindLambda([this, data, NewButton]()
 				{
 					if (FPLevel)
 					{
-						FPLevel->SetPlacementModeEnable(true);
+						FPLevel->SetPlacementModeEnable(true, data->BlueprintObject);
+						FPLevel->OnSpawnBuilding.BindLambda([this, data, NewButton]()
+							{
+								NewButton->ChangeBuildingCount(-1);
+								data->CurrentCount--;
+							});
 					}
 				});
-			NewButton->OnBuildingButtonDeactive.BindLambda([this](UFPBuildingButtonUI& ButtonUI)
+			NewButton->OnBuildingButtonDeactive.BindLambda([this, data]()
 				{
 					if (FPLevel)
 					{
-						FPLevel->SetPlacementModeEnable(false);
+						FPLevel->SetPlacementModeEnable(false, data->BlueprintObject);
+						FPLevel->OnSpawnBuilding.Unbind();
 					}
 				});
 

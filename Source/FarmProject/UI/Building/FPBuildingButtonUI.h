@@ -6,34 +6,12 @@
 #include "Blueprint/UserWidget.h"
 #include "FPBuildingButtonUI.generated.h"
 
-DECLARE_DELEGATE_OneParam(FBuildingButtonActiveDelegate, UFPBuildingButtonUI&);
-DECLARE_DELEGATE_OneParam(FBuildingButtonDeactiveDelegate, UFPBuildingButtonUI&);
+DECLARE_DELEGATE(FBuildingButtonActiveDelegate);
+DECLARE_DELEGATE(FBuildingButtonDeactiveDelegate);
 
 /**
  * 
  */
-
-USTRUCT(BlueprintType)
-struct FBuildingInfo
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Building")
-	FText BuildingName;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Building")
-	int32 BuildingCount;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Building")
-	UTexture2D* Image;
-
-	FBuildingInfo() : BuildingName(FText::GetEmpty()), BuildingCount(0), Image(nullptr) {}
-	FBuildingInfo(FText Name, int32 Count, UTexture2D* image) 
-		: BuildingName(Name), BuildingCount(Count), Image(image) {}
-};
-
-
 
 UCLASS()
 class FARMPROJECT_API UFPBuildingButtonUI : public UUserWidget
@@ -42,7 +20,9 @@ class FARMPROJECT_API UFPBuildingButtonUI : public UUserWidget
 	
 public:
 	UFPBuildingButtonUI(const FObjectInitializer& ObjectInitializer);
-	void ButtonInit(FBuildingInfo BuildingInfo);
+	void ButtonInit(int32 CurrentCount, UTexture2D* Image, FText Name);
+
+	void ChangeBuildingCount(int32 Num);
 
 public:
 	FBuildingButtonActiveDelegate OnBuildingButtonActive;

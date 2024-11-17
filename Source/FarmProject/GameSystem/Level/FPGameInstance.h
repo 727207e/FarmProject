@@ -17,5 +17,14 @@ class FARMPROJECT_API UFPGameInstance : public UGameInstance
 public:
 	UFPGameInstance();
 
-	//인벤토리
+	void AddInventory(TWeakObjectPtr<class UItemDataBase> item);
+
+public:
+	TArray<TWeakObjectPtr<class UBuildingItemData>> BuildingInventory;
+
+protected:
+	UPROPERTY()
+	TArray<TWeakObjectPtr<class UItemDataBase>> ItemInventory;
+
+	//...
 };
