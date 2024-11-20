@@ -27,6 +27,12 @@ public:
 protected:
 	virtual void NativeConstruct() override;
 
+	UFUNCTION()
+	void DeleteBuilding(AActor* Target);
+
+	UFUNCTION()
+	void BuildingMoveSelect(AActor* Target);
+
 protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<class UScrollBox> BuildingScrollBox;

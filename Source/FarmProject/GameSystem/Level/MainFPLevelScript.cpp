@@ -5,6 +5,7 @@
 #include "GameSystem/Building/GridManager.h"
 #include "GameSystem/Building/ActorComponent/BuildableCheckComponent.h"
 #include "GameSystem/Building/ActorComponent/ClickableComponent.h"
+#include "GameSystem/Data/BuildingItemData.h"
 #include "Kismet/GameplayStatics.h"
 
 AMainFPLevelScript::AMainFPLevelScript()
@@ -43,7 +44,7 @@ void AMainFPLevelScript::DeactiveBuildMode()
 	}
 }
 
-void AMainFPLevelScript::SetPlacementModeEnable(bool IsEnabled, TSubclassOf<UObject> TargetBuilding)
+void AMainFPLevelScript::SetPlacementModeEnable(bool IsEnabled, TWeakObjectPtr<UBuildingItemData> TargetData)
 {
 	if (bIsPlacementModeEnable == IsEnabled)
 	{
@@ -51,15 +52,15 @@ void AMainFPLevelScript::SetPlacementModeEnable(bool IsEnabled, TSubclassOf<UObj
 	}
 
 	bIsPlacementModeEnable = IsEnabled;
-	PlaceableActorREF = TargetBuilding;
+	TargetDataREF = TargetData;
 
-	if (bIsPlacementModeEnable && PlaceableActorREF)
+	if (bIsPlacementModeEnable && TargetDataREF.IsValid())
 	{
 		FTransform SpawnTransform(FVector(0, 0, -1000000.0f));
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		PlaceableActor = GetWorld()->SpawnActor<AActor>(PlaceableActorREF, SpawnTransform, SpawnParameters);
+		PlaceableActor = GetWorld()->SpawnActor<AActor>(TargetDataREF->BlueprintObject, SpawnTransform, SpawnParameters);
 
 		if (PlaceableActor && *BuildableCheckComponentREF)
 		{
@@ -67,6 +68,7 @@ void AMainFPLevelScript::SetPlacementModeEnable(bool IsEnabled, TSubclassOf<UObj
 
 			if (BuildableCheck)
 			{
+				PlaceableActor->AddInstanceComponent(BuildableCheck);
 				BuildableCheck->RegisterComponent();
 			}
 		}
@@ -93,7 +95,7 @@ void AMainFPLevelScript::SpawnBuilding()
 		return;
 	}
 
-	if (PlaceableActor && PlaceableActorREF)
+	if (PlaceableActor && TargetDataREF.IsValid())
 	{
 		UBuildableCheckComponent* TargetAC = PlaceableActor->GetComponentByClass<UBuildableCheckComponent>();
 		if (TargetAC != nullptr && TargetAC->bIsPlacementValid)
@@ -101,7 +103,7 @@ void AMainFPLevelScript::SpawnBuilding()
 			FActorSpawnParameters SpawnParameters;
 			SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-			AActor* BuildActor = GetWorld()->SpawnActor<AActor>(PlaceableActorREF, PlaceableActor->GetTransform(), SpawnParameters);
+			AActor* BuildActor = GetWorld()->SpawnActor<AActor>(TargetDataREF->BlueprintObject, PlaceableActor->GetTransform(), SpawnParameters);
 
 			if(BuildActor && *ClickableComponentREF)
 			{
@@ -109,6 +111,7 @@ void AMainFPLevelScript::SpawnBuilding()
 
 				if (Clickable)
 				{
+					BuildActor->AddInstanceComponent(Clickable);
 					Clickable->RegisterComponent();
 				}
 

@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "FPEditBuildingUI.generated.h"
 
+DECLARE_DELEGATE_OneParam(FOnBuildingJustDelete, AActor*);
+DECLARE_DELEGATE_OneParam(FOnBuildingDeleteAndMove, AActor*);
 /**
  * 
  */
@@ -19,6 +21,9 @@ public:
 
 	void ActiveEditBuildUI(class UClickableComponent* ClickableComponent);
 	void DeactiveEditBuildUI();
+
+	FOnBuildingJustDelete OnBuildingJustDelete;
+	FOnBuildingDeleteAndMove OnBuildingDeleteAndMove;
 
 protected:
 	UFUNCTION()

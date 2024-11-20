@@ -89,12 +89,22 @@ void UFPEditBuildingUI::OnRightButtonClicked()
 
 void UFPEditBuildingUI::OnGoInvenButtonClicked()
 {
+	if (OnBuildingJustDelete.IsBound())
+	{
+		OnBuildingJustDelete.Execute(CurTargetClickable->GetOwner());
+	}	
 	CurTargetClickable->OnDestroySelf();
+	DeactiveEditBuildUI();
 }
 
 void UFPEditBuildingUI::OnMoveButtonClicked()
 {
+	if (OnBuildingDeleteAndMove.IsBound())
+	{
+		OnBuildingDeleteAndMove.Execute(CurTargetClickable->GetOwner());
+	}
 	CurTargetClickable->OnDestroySelf();
+	DeactiveEditBuildUI();
 }
 
 void UFPEditBuildingUI::OnCancelButtonClicked()

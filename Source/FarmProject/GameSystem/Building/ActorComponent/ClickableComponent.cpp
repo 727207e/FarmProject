@@ -16,12 +16,15 @@ void UClickableComponent::OnClick()
 
 void UClickableComponent::OnDestroySelf()
 {
-	//인벤토리에 추가하는 로직
-	//UPaperSprite* LoadedSprite = LoadObject<UPaperSprite>(nullptr, TEXT("/Game/DownloadAsset/Ground_Game_UI/Sprites/Buttons/Active/Button__14__Sprite.Button__14__Sprite"));
-	//UTexture2D* SpriteTexture = LoadedSprite->GetBakedTexture();
-	//InfoArray.Add(FBuildingInfo(FText::FromString("TESTBuild"), 1, SpriteTexture));
+	for (TObjectPtr<class AGridCell> GridCellActor  : OverlappedGridSet)
+	{
+		GridCellActor->ResetGridState();
+	}
 
-	GetOwner()->Destroy();
+	if (GetOwner())
+	{
+		GetOwner()->Destroy();
+	}
 }
 
 

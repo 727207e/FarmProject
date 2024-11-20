@@ -24,7 +24,7 @@ public:
 	virtual void DeactiveBuildMode() override;
 	virtual void SpawnBuilding() override;
 
-	void SetPlacementModeEnable(bool IsEnabled, TSubclassOf<UObject> TargetBuilding);
+	void SetPlacementModeEnable(bool IsEnabled, TWeakObjectPtr<class UBuildingItemData> TargetData);
 	FORCEINLINE bool GetIsPlacementMode() { return bIsPlacementModeEnable; }
 	FORCEINLINE bool GetIsBuildMode() { return bIsBuildModeEnable; }
 
@@ -45,7 +45,7 @@ protected:
 	TObjectPtr<AActor> PlaceableActor;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TSubclassOf<AActor> PlaceableActorREF;
+	TWeakObjectPtr<class UBuildingItemData> TargetDataREF;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class UBuildableCheckComponent> BuildableCheckComponentREF;

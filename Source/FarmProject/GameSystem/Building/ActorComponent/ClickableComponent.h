@@ -23,5 +23,4 @@ protected:
 
 	UPROPERTY()
 	TSet<TObjectPtr<class AGridCell>> OverlappedGridSet;
-
 };

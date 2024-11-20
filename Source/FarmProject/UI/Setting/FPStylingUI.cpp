@@ -9,6 +9,7 @@
 #include "GameSystem/Building/ActorComponent/ClickableComponent.h"
 #include "GameSystem/Data/ItemDataBase.h"
 #include "GameSystem/Data/BuildingItemData.h"
+#include "GameSystem/Building/ActorComponent/FPBuildingInfoComponent.h"
 #include "GameSystem/Level/FPGameInstance.h"
 #include "UI/Building/FPEditBuildingUI.h"
 
@@ -34,9 +35,46 @@ void UFPStylingUI::NativeConstruct()
 	if (EditBuildingUI != nullptr)
 	{
 		EditBuildingUI->SetVisibility(ESlateVisibility::Hidden);
+		EditBuildingUI->OnBuildingJustDelete.BindUObject(this, &UFPStylingUI::DeleteBuilding);
+		EditBuildingUI->OnBuildingDeleteAndMove.BindUObject(this, &UFPStylingUI::BuildingMoveSelect);
 	}
+}
 
+void UFPStylingUI::DeleteBuilding(AActor* Target)
+{
+	UFPBuildingInfoComponent* BuildingInfo = Target->GetComponentByClass<UFPBuildingInfoComponent>();
+	if (BuildingInfo == nullptr)
+	{
+		return;
+	}
+	FString BuildingName = BuildingInfo->Name;
+	for (TObjectPtr<UFPBuildingButtonUI> Button : BuildingButtonArray)
+	{
+		if (BuildingName.Equals(Button->GetBuildingName()))
+		{
+			Button->ChangeBuildingCount(1);
+			break;
+		}
+	}
+}
 
+void UFPStylingUI::BuildingMoveSelect(AActor* Target)
+{
+	UFPBuildingInfoComponent* BuildingInfo = Target->GetComponentByClass<UFPBuildingInfoComponent>();
+	if (BuildingInfo == nullptr)
+	{
+		return;
+	}
+	FString BuildingName = BuildingInfo->Name;
+	for (TObjectPtr<UFPBuildingButtonUI> Button : BuildingButtonArray)
+	{
+		if (BuildingName.Equals(Button->GetBuildingName()))
+		{
+			Button->ChangeBuildingCount(1);
+			Button->OnButtonClicked();
+			break;
+		}
+	}
 }
 
 void UFPStylingUI::ActiveStylingUI()
@@ -94,7 +132,7 @@ void UFPStylingUI::GenerateBuildingButtonUI()
 				{
 					if (FPLevel)
 					{
-						FPLevel->SetPlacementModeEnable(true, data->BlueprintObject);
+						FPLevel->SetPlacementModeEnable(true, data);
 						FPLevel->OnSpawnBuilding.BindLambda([this, data, NewButton]()
 							{
 								NewButton->ChangeBuildingCount(-1);
@@ -106,7 +144,7 @@ void UFPStylingUI::GenerateBuildingButtonUI()
 				{
 					if (FPLevel)
 					{
-						FPLevel->SetPlacementModeEnable(false, data->BlueprintObject);
+						FPLevel->SetPlacementModeEnable(false, data);
 						FPLevel->OnSpawnBuilding.Unbind();
 					}
 				});

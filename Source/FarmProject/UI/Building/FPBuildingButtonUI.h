@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/TextBlock.h"
 #include "FPBuildingButtonUI.generated.h"
 
 DECLARE_DELEGATE(FBuildingButtonActiveDelegate);
@@ -24,15 +25,17 @@ public:
 
 	void ChangeBuildingCount(int32 Num);
 
+	UFUNCTION()
+	void OnButtonClicked();
+
+	FORCEINLINE FString GetBuildingName() { return BuildingNameText->GetText().ToString(); };
+
 public:
 	FBuildingButtonActiveDelegate OnBuildingButtonActive;
 	FBuildingButtonDeactiveDelegate OnBuildingButtonDeactive;
 
 protected:
 	virtual void NativeConstruct() override;
-
-	UFUNCTION()
-	void OnButtonClicked();
 
 protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

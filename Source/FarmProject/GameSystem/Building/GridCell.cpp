@@ -14,6 +14,15 @@ AGridCell::AGridCell()
 	GridMesh->SetupAttachment(RootComp);
 }
 
+void AGridCell::ResetGridState()
+{
+	if (MyState == EBuildState::OverlapBuilding)
+	{
+		MyState = EBuildState::Wait;
+		UpdateGridState(EBuildState::Wait);
+	}
+}
+
 void AGridCell::UpdateGridState(EBuildState CurState)
 {
 	if (MyState == EBuildState::OverlapBuilding)
