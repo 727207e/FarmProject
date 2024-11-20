@@ -60,7 +60,8 @@ protected:
 
 private:
 	void GetInventory();
-	void GenerateBuildingButtonUI();
+	void ScrollBoxSetup();
+	TObjectPtr<class UFPBuildingButtonUI> GenerateBuildingButtonUI(TObjectPtr<class UBuildingItemData> Data);
 
 private:
 	TObjectPtr<class AMainFPLevelScript> FPLevel;

@@ -9,7 +9,7 @@ UFPGameInstance::UFPGameInstance()
 {
 }
 
-void UFPGameInstance::AddInventory(TObjectPtr<UItemDataBase> item)
+void UFPGameInstance::AddItemToInventory(TObjectPtr<UItemDataBase> item)
 {
 	bool bFind = false;
 	for (TObjectPtr<UItemDataBase> AItem : ItemInventory)
@@ -23,7 +23,7 @@ void UFPGameInstance::AddInventory(TObjectPtr<UItemDataBase> item)
 
 	if (bFind)
 	{
-		EditInventoryItem(item, item->CurrentCount);
+		EditItemCount(item, item->CurrentCount);
 	}
 	else
 	{
@@ -32,14 +32,13 @@ void UFPGameInstance::AddInventory(TObjectPtr<UItemDataBase> item)
 	}
 }
 
-void UFPGameInstance::EditInventoryItem(TObjectPtr<UItemDataBase> item, int32 Num)
+void UFPGameInstance::EditItemCount(TObjectPtr<UItemDataBase> item, int32 Num)
 {
 	for (TObjectPtr<UItemDataBase> AItem : ItemInventory)
 	{
 		if (AItem->Name.EqualTo(item->Name))
 		{
 			AItem->CurrentCount += Num;
-
 			if (AItem->CurrentCount <= 0)
 			{
 				ItemInventory.Remove(AItem);

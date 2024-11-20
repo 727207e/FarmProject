@@ -48,13 +48,24 @@ void UFPStylingUI::DeleteBuilding(AActor* Target)
 		return;
 	}
 	FString BuildingName = BuildingInfo->Name;
+
+	bool bIsFind = false;
 	for (TObjectPtr<UFPBuildingButtonUI> Button : BuildingButtonArray)
 	{
 		if (BuildingName.Equals(Button->GetBuildingName()))
 		{
 			Button->AddBuildingCount(1);
+			GameInst->EditItemCount(BuildingInfo->BuildingData, 1);
+			bIsFind = true;
 			break;
 		}
+	}
+
+	if (!bIsFind)
+	{
+		BuildingInfo->BuildingData->CurrentCount = 1;
+		GameInst->AddItemToInventory(BuildingInfo->BuildingData);
+		GenerateBuildingButtonUI(BuildingInfo->BuildingData);
 	}
 }
 
@@ -66,21 +77,33 @@ void UFPStylingUI::BuildingMoveSelect(AActor* Target)
 		return;
 	}
 	FString BuildingName = BuildingInfo->Name;
+	BuildingInfo->BuildingData->CurrentCount += 1;
+
+	bool bIsFind = false;
 	for (TObjectPtr<UFPBuildingButtonUI> Button : BuildingButtonArray)
 	{
 		if (BuildingName.Equals(Button->GetBuildingName()))
 		{
 			Button->AddBuildingCount(1);
+			GameInst->EditItemCount(BuildingInfo->BuildingData, 1);
 			Button->OnButtonClicked();
+			bIsFind = true;
 			break;
 		}
+	}
+
+	if (!bIsFind)
+	{
+		BuildingInfo->BuildingData->CurrentCount = 1;
+		GameInst->AddItemToInventory(BuildingInfo->BuildingData);
+		GenerateBuildingButtonUI(BuildingInfo->BuildingData)->OnButtonClicked();
 	}
 }
 
 void UFPStylingUI::ActiveStylingUI()
 {
 	GetInventory();
-	GenerateBuildingButtonUI();
+	ScrollBoxSetup();
 }
 
 void UFPStylingUI::DeactiveStylingUI()
@@ -116,10 +139,10 @@ void UFPStylingUI::GetInventory()
 	NewItemData->Image = SpriteTexture;
 	NewItemData->Name = FText::FromString("TESTBuild");
 	NewItemData->BlueprintObject = ttttt;
-	GameInst->AddInventory(NewItemData);
+	GameInst->AddItemToInventory(NewItemData);
 }
 
-void UFPStylingUI::GenerateBuildingButtonUI()
+void UFPStylingUI::ScrollBoxSetup()
 {
 	for (int32 i = 0; i < GameInst->BuildingInventory.Num(); ++i)
 	{
@@ -131,7 +154,6 @@ void UFPStylingUI::GenerateBuildingButtonUI()
 			//이미 UI가 배치된 경우
 			if (data->Name.ToString().Equals(ButtonUI->GetBuildingName()))
 			{
-				UE_LOG(LogTemp, Error, TEXT("%d"), data->CurrentCount);
 				ButtonUI->SetBuildingCount(data->CurrentCount);
 				bIsFind = true;
 				break;
@@ -144,47 +166,54 @@ void UFPStylingUI::GenerateBuildingButtonUI()
 		}
 
 		//새로운 UI를 배치해야하는 경우
-		UFPBuildingButtonUI* NewButton = CreateWidget<UFPBuildingButtonUI>(this, BuildingButtonREF);
-		if (NewButton)
-		{
-			NewButton->ButtonInit(data->CurrentCount, data->Image, data->Name);
+		GenerateBuildingButtonUI(data);
+	}
+}
 
-			NewButton->OnBuildingButtonActive.BindLambda([this, data, NewButton]()
-				{
-					if (FPLevel)
-					{
-						FPLevel->SetPlacementModeEnable(true, data);
-						FPLevel->OnSpawnBuilding.BindLambda([this, data, NewButton]()
-							{
-								NewButton->AddBuildingCount(-1);
-								int32 curCount = data->CurrentCount - 1;
+TObjectPtr<class UFPBuildingButtonUI> UFPStylingUI::GenerateBuildingButtonUI(TObjectPtr<UBuildingItemData> Data)
+{
+	UFPBuildingButtonUI* NewButton = CreateWidget<UFPBuildingButtonUI>(this, BuildingButtonREF);
+	if (NewButton)
+	{
+		NewButton->ButtonInit(Data->CurrentCount, Data->Image, Data->Name);
 
-								GameInst->EditInventoryItem(data, -1);
-
-								if (curCount <= 0)
-								{
-									FPLevel->SetPlacementModeEnable(false);
-									RemoveBuildingButton(NewButton);
-								}
-							});
-					}
-				});
-			NewButton->OnBuildingButtonDeactive.BindLambda([this, data]()
-				{
-					if (FPLevel)
-					{
-						FPLevel->SetPlacementModeEnable(false, data);
-						FPLevel->OnSpawnBuilding.Unbind();
-					}
-				});
-
-			BuildingButtonArray.Add(NewButton);
-			if (BuildingScrollBox)
+		NewButton->OnBuildingButtonActive.BindLambda([this, Data, NewButton]()
 			{
-				BuildingScrollBox->AddChild(NewButton);
-			}
+				if (FPLevel)
+				{
+					FPLevel->SetPlacementModeEnable(true, Data);
+					FPLevel->OnSpawnBuilding.BindLambda([this, &Data, NewButton]()
+						{
+							NewButton->AddBuildingCount(-1);
+							int32 curCount = Data->CurrentCount - 1;
+
+							GameInst->EditItemCount(Data, -1);
+
+							if (curCount <= 0)
+							{
+								FPLevel->SetPlacementModeEnable(false);
+								RemoveBuildingButton(NewButton);
+							}
+						});
+				}
+			});
+		NewButton->OnBuildingButtonDeactive.BindLambda([this, &Data]()
+			{
+				if (FPLevel)
+				{
+					FPLevel->SetPlacementModeEnable(false, Data);
+					FPLevel->OnSpawnBuilding.Unbind();
+				}
+			});
+
+		BuildingButtonArray.Add(NewButton);
+		if (BuildingScrollBox)
+		{
+			BuildingScrollBox->AddChild(NewButton);
 		}
 	}
+
+	return NewButton;
 }
 
 void UFPStylingUI::RemoveBuildingButton(UFPBuildingButtonUI* ButtonToRemove)

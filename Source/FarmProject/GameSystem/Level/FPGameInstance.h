@@ -17,8 +17,8 @@ class FARMPROJECT_API UFPGameInstance : public UGameInstance
 public:
 	UFPGameInstance();
 
-	void AddInventory(TObjectPtr<class UItemDataBase> item);
-	void EditInventoryItem(TObjectPtr<class UItemDataBase> item, int32 Num);
+	void AddItemToInventory(TObjectPtr<class UItemDataBase> item);
+	void EditItemCount(TObjectPtr<class UItemDataBase> item, int32 Num);
 
 public:
 	TArray<TObjectPtr<class UBuildingItemData>> BuildingInventory;

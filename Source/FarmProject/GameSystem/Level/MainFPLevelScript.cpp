@@ -45,7 +45,7 @@ void AMainFPLevelScript::DeactiveBuildMode()
 	}
 }
 
-void AMainFPLevelScript::SetPlacementModeEnable(bool IsEnabled, TWeakObjectPtr<UBuildingItemData> TargetData)
+void AMainFPLevelScript::SetPlacementModeEnable(bool IsEnabled, TObjectPtr<UBuildingItemData> TargetData)
 {
 	if (bIsPlacementModeEnable == IsEnabled)
 	{
@@ -55,7 +55,7 @@ void AMainFPLevelScript::SetPlacementModeEnable(bool IsEnabled, TWeakObjectPtr<U
 	bIsPlacementModeEnable = IsEnabled;
 	TargetDataREF = TargetData;
 
-	if (bIsPlacementModeEnable && TargetDataREF.IsValid())
+	if (bIsPlacementModeEnable && TargetDataREF)
 	{
 		FTransform SpawnTransform(FVector(0, 0, -1000000.0f));
 		FActorSpawnParameters SpawnParameters;
@@ -96,7 +96,7 @@ void AMainFPLevelScript::SpawnBuilding()
 		return;
 	}
 
-	if (PlaceableActor && TargetDataREF.IsValid())
+	if (PlaceableActor && TargetDataREF)
 	{
 		UBuildableCheckComponent* TargetAC = PlaceableActor->GetComponentByClass<UBuildableCheckComponent>();
 		if (TargetAC != nullptr && TargetAC->bIsPlacementValid)
@@ -105,6 +105,7 @@ void AMainFPLevelScript::SpawnBuilding()
 			SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 			AFPBuilding* BuildActor = GetWorld()->SpawnActor<AFPBuilding>(TargetDataREF->BlueprintObject, PlaceableActor->GetTransform(), SpawnParameters);
+			BuildActor->BuildingData = TargetDataREF;
 
 			if(BuildActor && *ClickableComponentREF)
 			{

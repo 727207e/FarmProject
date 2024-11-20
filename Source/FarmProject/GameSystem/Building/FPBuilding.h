@@ -22,4 +22,7 @@ public:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Name;
+
+	UPROPERTY()
+	TObjectPtr<class UBuildingItemData> BuildingData;
 };
