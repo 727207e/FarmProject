@@ -6,6 +6,8 @@
 #include "GameFramework/HUD.h"
 #include "FPHud.generated.h"
 
+class UClickableComponent;
+DECLARE_DELEGATE_OneParam(FOnClickClickabeComp, UClickableComponent*)
 /**
  * 
  */
@@ -20,6 +22,8 @@ public:
 	UFUNCTION()
 	void OpenStylingUI();
 
+	FOnClickClickabeComp OnClickClickableComp;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -29,10 +33,8 @@ protected:
 
 private:
 	UPROPERTY()
-	TObjectPtr<UUserWidget> StylingUI;
+	TObjectPtr<class UFPStylingUI> StylingUI;
 
 	UPROPERTY()
 	TScriptInterface<class IBuildManagerInterface> BuildManager;
-
-	//인벤토리 가져오기
 };

@@ -10,6 +10,8 @@
 #include "GameSystem/Level/Interface/BuildManagerInterface.h"
 #include "Math/UnrealMathUtility.h"
 #include "Engine/LevelScriptActor.h"
+#include "GameSystem/Building/ActorComponent/ClickableComponent.h"
+#include "GameSystem/Level/MainFPLevelScript.h"
 #include "UI/FPHud.h"
 
 // Sets default values
@@ -33,7 +35,7 @@ AFPCameraPawn::AFPCameraPawn()
 
 void AFPCameraPawn::PossessedBy(AController* NewController)
 {
-	AFPMainController* FPCont = Cast<AFPMainController>(NewController);
+	FPCont = Cast<AFPMainController>(NewController);
 	if (FPCont != nullptr)
 	{
 		FPCont->OnInputTriggeredWheel.BindUObject(this, &AFPCameraPawn::ZoomInOut);
@@ -41,8 +43,9 @@ void AFPCameraPawn::PossessedBy(AController* NewController)
 		FPCont->OnInputTriggeredS.BindUObject(this, &AFPCameraPawn::MoveBack);
 		FPCont->OnInputTriggeredD.BindUObject(this, &AFPCameraPawn::MoveRight);
 		FPCont->OnInputTriggeredA.BindUObject(this, &AFPCameraPawn::MoveLeft);
+		FPCont->OnInputTriggeredMouseLeft.BindUObject(this, &AFPCameraPawn::ClickableClick);
 
-		AFPHud* MyHud = Cast<AFPHud>(FPCont->GetHUD());
+		MyHud = Cast<AFPHud>(FPCont->GetHUD());
 		if (MyHud)
 		{
 			FPCont->OnInputTriggeredO.BindUObject(MyHud, &AFPHud::OpenStylingUI);
@@ -56,6 +59,11 @@ void AFPCameraPawn::PossessedBy(AController* NewController)
 					MyBuildInterface->SpawnBuilding();
 				});
 		}
+	}
+
+	if (MainLevel == nullptr)
+	{
+		MainLevel = Cast<AMainFPLevelScript>(GetWorld()->GetLevelScriptActor());
 	}
 }
 
@@ -89,4 +97,53 @@ void AFPCameraPawn::ZoomInOut(float value)
 	ResultOrthoWidth = FMath::Clamp(ResultOrthoWidth, 500.0f, 3000.0f);
 
 	CameraComponent->OrthoWidth = ResultOrthoWidth;
+}
+
+void AFPCameraPawn::ClickableClick()
+{
+	FVector2D MousePosition;
+	if (FPCont->GetMousePosition(MousePosition.X, MousePosition.Y))
+	{
+		FVector WorldPosition;
+		FVector WorldDirection;
+
+		if (FPCont->DeprojectScreenPositionToWorld(MousePosition.X, MousePosition.Y, WorldPosition, WorldDirection))
+		{
+			FVector Start = WorldPosition;
+			FVector End = WorldPosition + (WorldDirection * 100000.0f);
+
+			FHitResult HitResult;
+			FCollisionQueryParams TraceParams(FName(TEXT("PlaceTrace")), true, this);
+			TraceParams.bTraceComplex = false;
+			TraceParams.bReturnPhysicalMaterial = false;
+			TraceParams.AddIgnoredActor(this);
+
+			bool bHit = GetWorld()->LineTraceSingleByChannel(
+				HitResult,
+				Start,
+				End,
+				ECC_WorldDynamic,
+				TraceParams
+			);
+
+			if (bHit)
+			{
+				UClickableComponent* ClickableComp = HitResult.GetActor()->FindComponentByClass<UClickableComponent>();
+				if (ClickableComp)
+				{
+					if (MainLevel->GetIsBuildMode())
+					{
+						if (MyHud->OnClickClickableComp.IsBound())
+						{
+							MyHud->OnClickClickableComp.Execute(ClickableComp);
+						}
+					}
+					else
+					{
+						ClickableComp->OnClick();
+					}
+				}
+			}
+		}
+	}
 }

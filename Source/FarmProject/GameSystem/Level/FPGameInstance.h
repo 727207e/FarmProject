@@ -17,5 +17,18 @@ class FARMPROJECT_API UFPGameInstance : public UGameInstance
 public:
 	UFPGameInstance();
 
-	//인벤토리
+	void AddItemToInventory(TObjectPtr<class UItemDataBase> item);
+	void EditItemCount(TObjectPtr<class UItemDataBase> item, int32 Num);
+
+public:
+	TArray<TObjectPtr<class UBuildingItemData>> BuildingInventory;
+
+protected:
+	UPROPERTY()
+	TArray<TObjectPtr<class UItemDataBase>> ItemInventory;
+
+	//...
+
+private:
+	void SortItem(TObjectPtr<class UItemDataBase> item);
 };

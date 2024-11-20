@@ -7,6 +7,8 @@
 #include "GameSystem/Level/Interface/BuildManagerInterface.h"
 #include "MainFPLevelScript.generated.h"
 
+DECLARE_DELEGATE(FOnSpawnBuilding)
+
 /**
  * 
  */
@@ -22,6 +24,12 @@ public:
 	virtual void DeactiveBuildMode() override;
 	virtual void SpawnBuilding() override;
 
+	void SetPlacementModeEnable(bool IsEnabled, TObjectPtr<class UBuildingItemData> TargetData = nullptr);
+	FORCEINLINE bool GetIsPlacementMode() { return bIsPlacementModeEnable; }
+	FORCEINLINE bool GetIsBuildMode() { return bIsBuildModeEnable; }
+
+	FOnSpawnBuilding OnSpawnBuilding;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -36,8 +44,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<AActor> PlaceableActor;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<AActor> PlaceableActorREF;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<class UBuildingItemData> TargetDataREF;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class UBuildableCheckComponent> BuildableCheckComponentREF;
@@ -52,11 +60,11 @@ protected:
 	FTimerHandle TimerHandle;
 
 private:
-	void SetPlacementModeEnable(bool IsEnabled);
 	void UpdatePlacement();
 
 private:
 	bool bIsTouch;
 	bool bIsPlacementModeEnable = false;
+	bool bIsBuildModeEnable = false;
 
 };
