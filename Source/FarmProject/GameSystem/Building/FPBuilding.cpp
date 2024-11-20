@@ -14,9 +14,12 @@ void AFPBuilding::UpdateClickInfo()
 	if (ClickComp == nullptr)
 	{
 		UE_LOG(LogTemp,Error,TEXT("%s : Can't Get ClickableComp"), *__FUNCTION__);
+		return;
 	}
-
-	ClickComp->OnClicked.BindUObject(this, &AFPBuilding::ShowBuildingUI);
+	else
+	{
+		ClickComp->OnClicked.BindUObject(this, &AFPBuilding::ShowBuildingUI);
+	}
 }
 
 void AFPBuilding::ShowBuildingUI()

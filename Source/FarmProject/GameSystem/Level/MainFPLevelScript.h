@@ -24,7 +24,7 @@ public:
 	virtual void DeactiveBuildMode() override;
 	virtual void SpawnBuilding() override;
 
-	void SetPlacementModeEnable(bool IsEnabled, TWeakObjectPtr<class UBuildingItemData> TargetData);
+	void SetPlacementModeEnable(bool IsEnabled, TWeakObjectPtr<class UBuildingItemData> TargetData = nullptr);
 	FORCEINLINE bool GetIsPlacementMode() { return bIsPlacementModeEnable; }
 	FORCEINLINE bool GetIsBuildMode() { return bIsBuildModeEnable; }
 

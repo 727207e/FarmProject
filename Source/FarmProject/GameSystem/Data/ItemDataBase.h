@@ -14,6 +14,7 @@ class FARMPROJECT_API UItemDataBase : public UObject
 {
 	GENERATED_BODY()
 
+    //해당 데이터 캡슐화할것. 오직 get만 하게
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 CurrentCount;

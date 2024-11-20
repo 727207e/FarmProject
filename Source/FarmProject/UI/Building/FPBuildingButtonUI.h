@@ -23,7 +23,8 @@ public:
 	UFPBuildingButtonUI(const FObjectInitializer& ObjectInitializer);
 	void ButtonInit(int32 CurrentCount, UTexture2D* Image, FText Name);
 
-	void ChangeBuildingCount(int32 Num);
+	void AddBuildingCount(int32 AddValue);
+	void SetBuildingCount(int32 SetValue);
 
 	UFUNCTION()
 	void OnButtonClicked();

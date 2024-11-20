@@ -33,6 +33,9 @@ protected:
 	UFUNCTION()
 	void BuildingMoveSelect(AActor* Target);
 
+	UFUNCTION()
+	void RemoveBuildingButton(UFPBuildingButtonUI* ButtonToRemove);
+
 protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<class UScrollBox> BuildingScrollBox;

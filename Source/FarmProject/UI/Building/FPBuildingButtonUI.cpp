@@ -36,19 +36,25 @@ void UFPBuildingButtonUI::ButtonInit(int32 CurrentCount, UTexture2D* Image, FTex
 	CountText->SetText(FText::AsNumber(CurrentCount));
 }
 
-void UFPBuildingButtonUI::ChangeBuildingCount(int32 Num)
+void UFPBuildingButtonUI::AddBuildingCount(int32 AddValue)
 {
 	FText CurrentText = CountText->GetText();
 	int32 CurrentValue = FCString::Atoi(*CurrentText.ToString());
-	int32 NewValue = CurrentValue + Num;
+	int32 NewValue = CurrentValue + AddValue;
 
 	CountText->SetText(FText::AsNumber(NewValue));
+}
+
+void UFPBuildingButtonUI::SetBuildingCount(int32 SetValue)
+{
+	CountText->SetText(FText::AsNumber(SetValue));
 }
 
 void UFPBuildingButtonUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 }
+
 
 void UFPBuildingButtonUI::OnButtonClicked()
 {

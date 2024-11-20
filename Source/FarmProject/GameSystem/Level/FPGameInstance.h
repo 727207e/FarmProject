@@ -17,14 +17,18 @@ class FARMPROJECT_API UFPGameInstance : public UGameInstance
 public:
 	UFPGameInstance();
 
-	void AddInventory(TWeakObjectPtr<class UItemDataBase> item);
+	void AddInventory(TObjectPtr<class UItemDataBase> item);
+	void EditInventoryItem(TObjectPtr<class UItemDataBase> item, int32 Num);
 
 public:
-	TArray<TWeakObjectPtr<class UBuildingItemData>> BuildingInventory;
+	TArray<TObjectPtr<class UBuildingItemData>> BuildingInventory;
 
 protected:
 	UPROPERTY()
-	TArray<TWeakObjectPtr<class UItemDataBase>> ItemInventory;
+	TArray<TObjectPtr<class UItemDataBase>> ItemInventory;
 
 	//...
+
+private:
+	void SortItem(TObjectPtr<class UItemDataBase> item);
 };
