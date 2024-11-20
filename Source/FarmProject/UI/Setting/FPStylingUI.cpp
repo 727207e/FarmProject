@@ -88,6 +88,7 @@ void UFPStylingUI::DeactiveStylingUI()
 	if (FPLevel)
 	{
 		FPLevel->SetPlacementModeEnable(false, nullptr);
+		EditBuildingUI->DeactiveEditBuildUI();
 	}
 }
 
