@@ -6,6 +6,7 @@
 #include "GameSystem/Building/ActorComponent/BuildableCheckComponent.h"
 #include "GameSystem/Building/ActorComponent/ClickableComponent.h"
 #include "GameSystem/Data/BuildingItemData.h"
+#include "GameSystem/Building/FPBuilding.h"
 #include "Kismet/GameplayStatics.h"
 
 AMainFPLevelScript::AMainFPLevelScript()
@@ -103,7 +104,7 @@ void AMainFPLevelScript::SpawnBuilding()
 			FActorSpawnParameters SpawnParameters;
 			SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-			AActor* BuildActor = GetWorld()->SpawnActor<AActor>(TargetDataREF->BlueprintObject, PlaceableActor->GetTransform(), SpawnParameters);
+			AFPBuilding* BuildActor = GetWorld()->SpawnActor<AFPBuilding>(TargetDataREF->BlueprintObject, PlaceableActor->GetTransform(), SpawnParameters);
 
 			if(BuildActor && *ClickableComponentREF)
 			{
@@ -113,6 +114,8 @@ void AMainFPLevelScript::SpawnBuilding()
 				{
 					BuildActor->AddInstanceComponent(Clickable);
 					Clickable->RegisterComponent();
+
+					BuildActor->UpdateClickInfo();
 				}
 
 				if (OnSpawnBuilding.IsBound())

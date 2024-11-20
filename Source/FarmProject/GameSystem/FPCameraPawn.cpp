@@ -131,14 +131,17 @@ void AFPCameraPawn::ClickableClick()
 				UClickableComponent* ClickableComp = HitResult.GetActor()->FindComponentByClass<UClickableComponent>();
 				if (ClickableComp)
 				{
-					if (MyHud->OnClickClickableComp.IsBound())
+					if (MainLevel->GetIsBuildMode())
 					{
-						MyHud->OnClickClickableComp.Execute(ClickableComp);
+						if (MyHud->OnClickClickableComp.IsBound())
+						{
+							MyHud->OnClickClickableComp.Execute(ClickableComp);
+						}
 					}
-
-					//건물 UI 활성화도 넣어둘것.
-
-					ClickableComp->OnClick();
+					else
+					{
+						ClickableComp->OnClick();
+					}
 				}
 			}
 		}

@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "ClickableComponent.generated.h"
 
+DECLARE_DELEGATE(FOnClick)
 
 UCLASS(Blueprintable)
 class FARMPROJECT_API UClickableComponent : public UActorComponent
@@ -17,6 +18,8 @@ public:
 
 	void OnClick();
 	void OnDestroySelf();
+
+	FOnClick OnClicked;
 
 protected:
 	virtual void BeginPlay() override;

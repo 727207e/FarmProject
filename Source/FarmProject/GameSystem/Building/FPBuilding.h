@@ -3,17 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
-#include "FPBuildingInfoComponent.generated.h"
+#include "GameFramework/Actor.h"
+#include "FPBuilding.generated.h"
 
-
-UCLASS(Blueprintable)
-class FARMPROJECT_API UFPBuildingInfoComponent : public UActorComponent
+UCLASS()
+class FARMPROJECT_API AFPBuilding : public AActor
 {
 	GENERATED_BODY()
-
+	
 public:	
-	UFPBuildingInfoComponent();
+	AFPBuilding();
+
+	void UpdateClickInfo();
+
+	UFUNCTION()
+	void ShowBuildingUI();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

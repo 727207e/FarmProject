@@ -11,7 +11,10 @@ UClickableComponent::UClickableComponent()
 
 void UClickableComponent::OnClick()
 {
-
+	if (OnClicked.IsBound())
+	{
+		OnClicked.Execute();
+	}
 }
 
 void UClickableComponent::OnDestroySelf()
@@ -26,7 +29,6 @@ void UClickableComponent::OnDestroySelf()
 		GetOwner()->Destroy();
 	}
 }
-
 
 void UClickableComponent::BeginPlay()
 {

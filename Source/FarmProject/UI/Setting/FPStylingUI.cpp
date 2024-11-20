@@ -9,8 +9,8 @@
 #include "GameSystem/Building/ActorComponent/ClickableComponent.h"
 #include "GameSystem/Data/ItemDataBase.h"
 #include "GameSystem/Data/BuildingItemData.h"
-#include "GameSystem/Building/ActorComponent/FPBuildingInfoComponent.h"
 #include "GameSystem/Level/FPGameInstance.h"
+#include "GameSystem/Building/FPBuilding.h"
 #include "UI/Building/FPEditBuildingUI.h"
 
 #define BuildingScrollBoxUIName TEXT("BuildingScrollBox_UI")
@@ -42,7 +42,7 @@ void UFPStylingUI::NativeConstruct()
 
 void UFPStylingUI::DeleteBuilding(AActor* Target)
 {
-	UFPBuildingInfoComponent* BuildingInfo = Target->GetComponentByClass<UFPBuildingInfoComponent>();
+	AFPBuilding* BuildingInfo = Cast<AFPBuilding>(Target);
 	if (BuildingInfo == nullptr)
 	{
 		return;
@@ -60,7 +60,7 @@ void UFPStylingUI::DeleteBuilding(AActor* Target)
 
 void UFPStylingUI::BuildingMoveSelect(AActor* Target)
 {
-	UFPBuildingInfoComponent* BuildingInfo = Target->GetComponentByClass<UFPBuildingInfoComponent>();
+	AFPBuilding* BuildingInfo = Cast<AFPBuilding>(Target);
 	if (BuildingInfo == nullptr)
 	{
 		return;
