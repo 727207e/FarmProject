@@ -16,6 +16,7 @@ void AFPBuildingField::BeginPlay()
 	MyHud = Cast<AFPHud>(GetWorld()->GetFirstPlayerController()->GetHUD());
 
 	FieldData = NewObject<UFieldItemData>(this, UFieldItemData::StaticClass());
+	//FieldData에 비어있는 경우 빈 이미지, 등등 넣을것.
 }
 
 void AFPBuildingField::ShowBuildingUI()

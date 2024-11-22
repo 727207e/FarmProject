@@ -25,6 +25,16 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class UFieldItemData> CurData;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<class UImage> PropertyUI;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<class UImage> MainImageUI;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<class UTextBlock> TitleTextUI;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<class UTextBlock> ContentTextUI;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<class UButton> SeedButtonUI;
 private:
 	void ActiveUI();
 	void DeactiveUI();
