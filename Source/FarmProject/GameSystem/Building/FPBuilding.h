@@ -17,7 +17,7 @@ public:
 	void UpdateClickInfo();
 
 	UFUNCTION()
-	void ShowBuildingUI();
+	virtual void ShowBuildingUI();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -25,4 +25,12 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<class UBuildingItemData> BuildingData;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UUserWidget> BuildingUIClass;
+
+private:
+	UPROPERTY()
+	TObjectPtr<UUserWidget> BuildingUI;
 };
