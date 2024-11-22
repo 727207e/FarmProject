@@ -4,6 +4,7 @@
 #include "GameSystem/Level/FPGameInstance.h"
 #include "GameSystem/Data/ItemDataBase.h"
 #include "GameSystem/Data/BuildingItemData.h"
+#include "GameSystem/Data/SeedDataBase.h"
 
 UFPGameInstance::UFPGameInstance()
 {
@@ -65,6 +66,18 @@ void UFPGameInstance::SortItem(TObjectPtr<UItemDataBase> item)
 		else
 		{
 			BuildingInventory.Add(BuildingItem);
+		}
+	}
+	else if (item->IsA(USeedDataBase::StaticClass()))
+	{
+		TObjectPtr<USeedDataBase> SeedItem = Cast<USeedDataBase>(item);
+		if (item->CurrentCount <= 0)
+		{
+			SeedInventory.Remove(SeedItem);
+		}
+		else
+		{
+			SeedInventory.Add(SeedItem);
 		}
 	}
 }
