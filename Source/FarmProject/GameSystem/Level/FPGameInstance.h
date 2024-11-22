@@ -22,6 +22,7 @@ public:
 
 public:
 	TArray<TObjectPtr<class UBuildingItemData>> BuildingInventory;
+	TArray<TObjectPtr<class USeedDataBase>> SeedInventory;
 
 protected:
 	UPROPERTY()

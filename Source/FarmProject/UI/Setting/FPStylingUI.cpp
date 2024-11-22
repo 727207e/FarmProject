@@ -129,17 +129,6 @@ void UFPStylingUI::ActiveEditBuildMode(UClickableComponent* ClickableComponent)
 void UFPStylingUI::GetInventory()
 {
 	GameInst = Cast<UFPGameInstance>(GetGameInstance());
-
-///////테스트 코드 - 인벤토리에 강제로 아이템 주입 (GameInst 에서 생성하는 로직도 만들어야 할듯 - 삭제가 안됨)
-	TObjectPtr<UBuildingItemData> NewItemData = NewObject<UBuildingItemData>(this);
-	NewItemData->CurrentCount = 1;
-	NewItemData->MaxCount = 1;
-	UPaperSprite* LoadedSprite = LoadObject<UPaperSprite>(nullptr, TEXT("/Game/DownloadAsset/Ground_Game_UI/Sprites/Buttons/Active/Button__14__Sprite.Button__14__Sprite"));
-	UTexture2D* SpriteTexture = LoadedSprite->GetBakedTexture();
-	NewItemData->Image = SpriteTexture;
-	NewItemData->Name = FText::FromString("TESTBuild");
-	NewItemData->BlueprintObject = ttttt;
-	GameInst->AddItemToInventory(NewItemData);
 }
 
 void UFPStylingUI::ScrollBoxSetup()

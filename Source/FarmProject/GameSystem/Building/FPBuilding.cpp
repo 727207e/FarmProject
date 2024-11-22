@@ -3,6 +3,7 @@
 
 #include "GameSystem/Building/FPBuilding.h"
 #include "GameSystem/Building/ActorComponent/ClickableComponent.h"
+#include "Blueprint/UserWidget.h"
 
 AFPBuilding::AFPBuilding()
 {
@@ -24,5 +25,25 @@ void AFPBuilding::UpdateClickInfo()
 
 void AFPBuilding::ShowBuildingUI()
 {
-	UE_LOG(LogTemp, Error, TEXT("1"));
+	if (BuildingUI == nullptr && BuildingUIClass != nullptr)
+	{
+		BuildingUI = CreateWidget<UUserWidget>(GetWorld(), BuildingUIClass);
+		if (BuildingUI)
+		{
+			BuildingUI->AddToViewport();
+			BuildingUI->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
+	
+	if (BuildingUI)
+	{
+		if (BuildingUI->IsVisible())
+		{
+			BuildingUI->SetVisibility(ESlateVisibility::Hidden);
+		}
+		else
+		{
+			BuildingUI->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
 }
