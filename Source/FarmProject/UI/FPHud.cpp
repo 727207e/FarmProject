@@ -7,6 +7,8 @@
 #include "GameSystem/Level/Interface/BuildManagerInterface.h"
 #include "GameSystem/Building/ActorComponent/ClickableComponent.h"
 #include "UI/Setting/FPStylingUI.h"
+#include "GameSystem/Data/FieldItemData.h"
+#include "UI/FPDownInfoWidget.h"
 
 AFPHud::AFPHud()
 {
@@ -37,6 +39,11 @@ void AFPHud::OpenStylingUI()
     }
 }
 
+void AFPHud::DownInfoUIUpdate(TObjectPtr<UFieldItemData> FieldData)
+{
+    DownInfoUI->CurUISetting(FieldData);
+}
+
 void AFPHud::BeginPlay()
 {
     if (StylingUI == nullptr)
@@ -48,6 +55,15 @@ void AFPHud::BeginPlay()
             StylingUI->SetVisibility(ESlateVisibility::Hidden);
 
             OnClickClickableComp.BindUObject(StylingUI, &UFPStylingUI::ActiveEditBuildMode);
+        }
+    }
+    if (DownInfoUI == nullptr)
+    {
+        DownInfoUI = Cast<UFPDownInfoWidget>(CreateWidget<UFPDownInfoWidget>(GetWorld(), DownInfoUIClass));
+        if (DownInfoUI)
+        {
+            DownInfoUI->AddToViewport();
+            DownInfoUI->SetVisibility(ESlateVisibility::Hidden);
         }
     }
 

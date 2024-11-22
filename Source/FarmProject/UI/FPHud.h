@@ -8,6 +8,7 @@
 
 class UClickableComponent;
 DECLARE_DELEGATE_OneParam(FOnClickClickabeComp, UClickableComponent*)
+
 /**
  * 
  */
@@ -22,6 +23,11 @@ public:
 	UFUNCTION()
 	void OpenStylingUI();
 
+	//동물도 같은 메소드 사용
+	//이때 파라미터만 수정해서 사용하면 될듯.
+	//Field 랑 Animal 이랑 이렇게 해서.
+	void DownInfoUIUpdate(TObjectPtr<class UFieldItemData> FieldData);
+
 	FOnClickClickabeComp OnClickClickableComp;
 
 protected:
@@ -30,10 +36,14 @@ protected:
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget> StylingUIClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UUserWidget> DownInfoUIClass;
 
 private:
 	UPROPERTY()
 	TObjectPtr<class UFPStylingUI> StylingUI;
+	UPROPERTY()
+	TObjectPtr<class UFPDownInfoWidget> DownInfoUI;
 
 	UPROPERTY()
 	TScriptInterface<class IBuildManagerInterface> BuildManager;
