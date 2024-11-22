@@ -13,6 +13,7 @@
 #include "GameSystem/Building/ActorComponent/ClickableComponent.h"
 #include "GameSystem/Level/MainFPLevelScript.h"
 #include "UI/FPHud.h"
+#include "Info/NameDefine.h"
 
 // Sets default values
 AFPCameraPawn::AFPCameraPawn()
@@ -122,7 +123,7 @@ void AFPCameraPawn::ClickableClick()
 				HitResult,
 				Start,
 				End,
-				ECC_WorldDynamic,
+				COLLISION_CLICKABLE,
 				TraceParams
 			);
 
