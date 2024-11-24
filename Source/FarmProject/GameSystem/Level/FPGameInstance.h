@@ -17,6 +17,8 @@ class FARMPROJECT_API UFPGameInstance : public UGameInstance
 public:
 	UFPGameInstance();
 
+	FString GetCurrentTime();
+
 	void AddItemToInventory(TObjectPtr<class UItemDataBase> item);
 	void EditItemCount(TObjectPtr<class UItemDataBase> item, int32 Num);
 

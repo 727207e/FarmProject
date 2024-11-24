@@ -20,7 +20,7 @@ public:
     UTexture2D* Image;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
-    int32 StartTime;
+    FString StartTime;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     int32 NeedMTime;

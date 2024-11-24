@@ -10,6 +10,22 @@ UFPGameInstance::UFPGameInstance()
 {
 }
 
+FString UFPGameInstance::GetCurrentTime()
+{
+	FDateTime Now = FDateTime::Now();
+
+	FString CurrentTime = FString::Printf(TEXT("%04d%02d%02d%02d%02d%02d"),
+		Now.GetYear(),
+		Now.GetMonth(),
+		Now.GetDay(),
+		Now.GetHour(),
+		Now.GetMinute(),
+		Now.GetSecond()
+	);
+
+	return CurrentTime;
+}
+
 void UFPGameInstance::AddItemToInventory(TObjectPtr<UItemDataBase> item)
 {
 	bool bFind = false;
