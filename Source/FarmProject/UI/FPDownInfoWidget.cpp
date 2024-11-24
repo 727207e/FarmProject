@@ -65,6 +65,7 @@ void UFPDownInfoWidget::SeedSelectionChanged(FString SelectedItem, ESelectInfo::
 		CurData->NeedLTime = SelectedObject->NeedLTime;
 		CurData->MStaticMesh = SelectedObject->MStaticMesh.GetClass();
 		CurData->LStaticMesh = SelectedObject->LStaticMesh.GetClass();
+		CurData->ECurState = EFieldState::S;
 
 		CurData->StartTime = GameIns->GetCurrentTime();
 
@@ -91,6 +92,52 @@ void UFPDownInfoWidget::SeedOpening()
 	}
 }
 
+void UFPDownInfoWidget::SettingRemainTimeText()
+{    
+	FDateTime Now = FDateTime::Now();
+
+	int32 Year = FCString::Atoi(*CurData->StartTime.Mid(0, 4));
+	int32 Month = FCString::Atoi(*CurData->StartTime.Mid(4, 2));
+	int32 Day = FCString::Atoi(*CurData->StartTime.Mid(6, 2));
+	int32 Hour = FCString::Atoi(*CurData->StartTime.Mid(8, 2));
+	int32 Minute = FCString::Atoi(*CurData->StartTime.Mid(10, 2));
+	int32 Second = FCString::Atoi(*CurData->StartTime.Mid(12, 2));
+	FDateTime PlantedDateTime(Year, Month, Day, Hour, Minute, Second);
+
+	FTimespan ElapsedTime = Now - PlantedDateTime;
+
+	int32 NextStateTime = 0;
+	if (CurData->ECurState == EFieldState::S)
+	{
+		NextStateTime = CurData->NeedMTime + 1;
+	}
+	else if (CurData->ECurState == EFieldState::M)
+	{
+		NextStateTime = CurData->NeedMTime + CurData->NeedLTime + 1;
+	}
+	else
+	{
+		ContentTextUI->SetText(FText::FromString(TEXT("Finish")));
+		return;
+	}
+
+	int32 RemainingSeconds = NextStateTime - ElapsedTime.GetTotalSeconds();
+
+	int32 Hours = RemainingSeconds / 3600;
+	int32 Minutes = (RemainingSeconds % 3600) / 60;
+	int32 Seconds = RemainingSeconds % 60;
+
+	UEnum* EnumPtr = StaticEnum<EFieldState>();
+	FString EnumAsString = EnumPtr->GetDisplayNameTextByValue(static_cast<int64>(CurData->ECurState)).ToString();
+	FString ResultText = FString::Printf(TEXT("Current State : %s\nRemain Time : %02d:%02d:%02d"), *EnumAsString, Hours, Minutes, Seconds);
+	ContentTextUI->SetText(FText::FromString(ResultText));
+
+	if (RemainingSeconds <= 0)
+	{
+		CurData->ECurState = CurData->ECurState == EFieldState::S ? EFieldState::M : EFieldState::L;
+	}
+}
+
 void UFPDownInfoWidget::ActiveUI()
 {
 	this->SetVisibility(ESlateVisibility::Visible);
@@ -104,12 +151,17 @@ void UFPDownInfoWidget::DeactiveUI()
 
 void UFPDownInfoWidget::DataChangeUI()
 {
-	MainImageUI->SetBrushFromTexture(CurData->Image);
-	TitleTextUI->SetText(CurData->Name);
+	if (CurData->ECurState != EFieldState::None)
+	{
+		MainImageUI->SetBrushFromTexture(CurData->Image);
+		TitleTextUI->SetText(CurData->Name);
 
-
-	//ContentTextUI->SetText()
-
+		if (GetWorld()->GetTimerManager().IsTimerActive(PlantTimerHandle))
+		{
+			GetWorld()->GetTimerManager().ClearTimer(PlantTimerHandle);
+		}
+		GetWorld()->GetTimerManager().SetTimer(PlantTimerHandle, this, &UFPDownInfoWidget::SettingRemainTimeText, 0.5f, true);
+	}
 }
 
 void UFPDownInfoWidget::CurUISetting(TObjectPtr<UFieldItemData> FieldData)

@@ -6,6 +6,15 @@
 #include "UObject/NoExportTypes.h"
 #include "FieldItemData.generated.h"
 
+UENUM(BlueprintType)
+enum class EFieldState : uint8
+{
+    None UMETA(DisplayName = "None"),
+    S UMETA(DisplayName = "Small"),
+    M UMETA(DisplayName = "Midium"),
+    L UMETA(DisplayName = "Large")
+};
+
 /**
  * 
  */
@@ -43,4 +52,7 @@ public:
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     FText Name;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
+    EFieldState ECurState = EFieldState::None;
 };

@@ -26,6 +26,9 @@ protected:
 	UFUNCTION()
 	void SeedOpening();
 
+	UFUNCTION()
+	void SettingRemainTimeText();
+
 protected:
 	UPROPERTY()
 	TObjectPtr<class UFieldItemData> CurData;
@@ -54,4 +57,7 @@ private:
 	void ActiveUI();
 	void DeactiveUI();
 	void DataChangeUI();
+
+private:
+	FTimerHandle PlantTimerHandle;
 };
