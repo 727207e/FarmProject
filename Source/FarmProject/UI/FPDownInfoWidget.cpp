@@ -83,6 +83,7 @@ void UFPDownInfoWidget::SeedOpening()
 	if (GameIns)
 	{
 		SeedInven = GameIns->SeedInventory;
+		SeedComboBoxUI->ClearOptions();
 
 		for(TObjectPtr<USeedDataBase> SeedData : SeedInven)
 		{
