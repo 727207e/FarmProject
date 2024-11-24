@@ -17,11 +17,15 @@ class FARMPROJECT_API UFPGameInstance : public UGameInstance
 public:
 	UFPGameInstance();
 
-	FString GetCurrentTime();
-
+	void GameStart();
 	void AddItemToInventory(TObjectPtr<class UItemDataBase> item);
 	void EditItemCount(TObjectPtr<class UItemDataBase> item, int32 Num);
 
+	UFUNCTION()
+	void TimeCheckTimer();
+
+	void AddTimeCheckArray(TObjectPtr<class UFieldItemData> Target);
+	void RemoveTimeCheckArray(TObjectPtr<class UFieldItemData> Target);
 public:
 	TArray<TObjectPtr<class UBuildingItemData>> BuildingInventory;
 	TArray<TObjectPtr<class USeedDataBase>> SeedInventory;
@@ -31,6 +35,14 @@ protected:
 	TArray<TObjectPtr<class UItemDataBase>> ItemInventory;
 
 	//...
+
+	UPROPERTY()
+	TArray<TObjectPtr<class UFieldItemData>> TimeCheckArray;
+
+	FTimerHandle TimeCheckHandle;
+
+
+
 
 private:
 	void SortItem(TObjectPtr<class UItemDataBase> item);

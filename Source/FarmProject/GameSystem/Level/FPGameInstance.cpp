@@ -2,6 +2,7 @@
 
 
 #include "GameSystem/Level/FPGameInstance.h"
+#include "GameSystem/Data/FieldItemData.h"
 #include "GameSystem/Data/ItemDataBase.h"
 #include "GameSystem/Data/BuildingItemData.h"
 #include "GameSystem/Data/SeedDataBase.h"
@@ -10,20 +11,9 @@ UFPGameInstance::UFPGameInstance()
 {
 }
 
-FString UFPGameInstance::GetCurrentTime()
+void UFPGameInstance::GameStart()
 {
-	FDateTime Now = FDateTime::Now();
-
-	FString CurrentTime = FString::Printf(TEXT("%04d%02d%02d%02d%02d%02d"),
-		Now.GetYear(),
-		Now.GetMonth(),
-		Now.GetDay(),
-		Now.GetHour(),
-		Now.GetMinute(),
-		Now.GetSecond()
-	);
-
-	return CurrentTime;
+	GetWorld()->GetTimerManager().SetTimer(TimeCheckHandle, this, &UFPGameInstance::TimeCheckTimer, 0.1f, true);
 }
 
 void UFPGameInstance::AddItemToInventory(TObjectPtr<UItemDataBase> item)
@@ -68,6 +58,58 @@ void UFPGameInstance::EditItemCount(TObjectPtr<UItemDataBase> item, int32 Num)
 			break;
 		}
 	}
+}
+
+void UFPGameInstance::TimeCheckTimer()
+{
+	FDateTime Now = FDateTime::Now();
+
+	while (!TimeCheckArray.IsEmpty())
+	{
+		TObjectPtr<UFieldItemData> TopData = TimeCheckArray[0];
+
+		UE_LOG(LogTemp, Log, TEXT("Current State: %s"), *TopData->NextNeedTime.ToString());
+
+		if (TopData->NextNeedTime < Now)
+		{
+			TopData->NextState();
+			TimeCheckArray.Remove(TopData);
+
+			if (TopData->ECurState != EFieldState::L)
+			{
+				AddTimeCheckArray(TopData);
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+}
+
+void UFPGameInstance::AddTimeCheckArray(TObjectPtr<UFieldItemData> Target)
+{
+	int32 InsertIndex = 0;
+	for (int32 i = 0; i < TimeCheckArray.Num(); ++i)
+	{
+		if (Target < TimeCheckArray[i])
+		{
+			InsertIndex = i;
+			break;
+		}
+	}
+
+	if (InsertIndex == 0 && TimeCheckArray.Num() > 0 && !(Target < TimeCheckArray.Last()))
+	{
+		InsertIndex = TimeCheckArray.Num();
+	}
+
+	TimeCheckArray.Insert(Target, InsertIndex);
+}
+
+void UFPGameInstance::RemoveTimeCheckArray(TObjectPtr<class UFieldItemData> Target)
+{
+	TimeCheckArray.Remove(Target);
 }
 
 void UFPGameInstance::SortItem(TObjectPtr<UItemDataBase> item)

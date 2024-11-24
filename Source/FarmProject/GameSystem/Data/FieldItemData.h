@@ -28,9 +28,14 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     UTexture2D* Image;
 
+    void InitStartTime();
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
-    FString StartTime;
+    FDateTime StartTime;
 
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
+    FDateTime NextNeedTime;
+
+    void NextState();
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     int32 NeedMTime;
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -55,4 +60,9 @@ public:
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     EFieldState ECurState = EFieldState::None;
+
+    bool operator<(const UFieldItemData& Other) const
+    {
+        return NextNeedTime < Other.NextNeedTime;
+    }
 };
