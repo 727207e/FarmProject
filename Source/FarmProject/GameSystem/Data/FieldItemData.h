@@ -15,6 +15,8 @@ enum class EFieldState : uint8
     L UMETA(DisplayName = "Large")
 };
 
+DECLARE_DELEGATE_OneParam(FOnNextState, EFieldState);
+
 /**
  * 
  */
@@ -24,6 +26,7 @@ class FARMPROJECT_API UFieldItemData : public UObject
 	GENERATED_BODY()
 	
 public:
+    FOnNextState OnNextState;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     UTexture2D* Image;
@@ -42,9 +45,9 @@ public:
     int32 NeedLTime;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
-    TSubclassOf<UStaticMesh> MStaticMesh;
+    TObjectPtr<UStaticMesh> MStaticMesh;
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
-    TSubclassOf<UStaticMesh> LStaticMesh;
+    TObjectPtr<UStaticMesh> LStaticMesh;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     FText ResultFarmName;

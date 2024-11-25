@@ -7,6 +7,8 @@
 
 AFPBuilding::AFPBuilding()
 {
+	RootComp = CreateDefaultSubobject<USceneComponent>("RootCom");
+	SetRootComponent(RootComp);
 }
 
 void AFPBuilding::UpdateClickInfo()

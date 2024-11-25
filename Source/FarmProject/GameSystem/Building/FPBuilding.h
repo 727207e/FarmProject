@@ -26,6 +26,9 @@ public:
 	UPROPERTY()
 	TObjectPtr<class UBuildingItemData> BuildingData;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<class USceneComponent> RootComp;
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget> BuildingUIClass;
