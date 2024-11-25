@@ -73,6 +73,8 @@ void UFPDownInfoWidget::SeedSelectionChanged(FString SelectedItem, ESelectInfo::
 		CurData->ECurState = EFieldState::S;
 
 		CurData->InitStartTime();
+
+		UE_LOG(LogTemp,Error,TEXT("%s"), *CurData.Get()->GetName());
 		GameIns->AddTimeCheckArray(CurData);
 		DataChangeUI();
 	}
@@ -160,7 +162,7 @@ void UFPDownInfoWidget::CurUISetting(TObjectPtr<UFieldItemData> FieldData)
 		CurData = FieldData;
 		ActiveUI();
 	}
-	else if (CurData == FieldData)
+	else if (CurData.Get() == FieldData)
 	{
 		CurData = nullptr;
 		DeactiveUI();

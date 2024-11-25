@@ -24,8 +24,8 @@ public:
 	UFUNCTION()
 	void TimeCheckTimer();
 
-	void AddTimeCheckArray(TObjectPtr<class UFieldItemData> Target);
-	void RemoveTimeCheckArray(TObjectPtr<class UFieldItemData> Target);
+	void AddTimeCheckArray(TWeakObjectPtr<class UFieldItemData> Target);
+	void RemoveTimeCheckArray(TWeakObjectPtr<class UFieldItemData> Target);
 public:
 	TArray<TObjectPtr<class UBuildingItemData>> BuildingInventory;
 	TArray<TObjectPtr<class USeedDataBase>> SeedInventory;
@@ -37,12 +37,9 @@ protected:
 	//...
 
 	UPROPERTY()
-	TArray<TObjectPtr<class UFieldItemData>> TimeCheckArray;
+	TArray<TWeakObjectPtr<class UFieldItemData>> TimeCheckArray;
 
 	FTimerHandle TimeCheckHandle;
-
-
-
 
 private:
 	void SortItem(TObjectPtr<class UItemDataBase> item);

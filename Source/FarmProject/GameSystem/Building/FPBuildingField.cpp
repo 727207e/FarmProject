@@ -4,6 +4,7 @@
 #include "GameSystem/Building/FPBuildingField.h"
 #include "UI/FPHud.h"
 #include "GameSystem/Data/FieldItemData.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AFPBuildingField::AFPBuildingField()
 {
@@ -15,7 +16,10 @@ void AFPBuildingField::BeginPlay()
 
 	MyHud = Cast<AFPHud>(GetWorld()->GetFirstPlayerController()->GetHUD());
 
-	FieldData = NewObject<UFieldItemData>(this, UFieldItemData::StaticClass());
+	int32 RandomNumber = UKismetMathLibrary::RandomIntegerInRange(1, 10000);
+	FString ObjectName = FString::Printf(TEXT("RandomObject_%d"), RandomNumber);
+	UE_LOG(LogTemp, Error, TEXT(" Spawn : %s") , *ObjectName);
+	FieldData = NewObject<UFieldItemData>(this, UFieldItemData::StaticClass(), FName(*ObjectName));
 	//FieldData에 비어있는 경우 빈 이미지, 등등 넣을것.
 }
 

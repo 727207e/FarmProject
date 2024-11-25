@@ -31,7 +31,7 @@ protected:
 
 protected:
 	UPROPERTY()
-	TObjectPtr<class UFieldItemData> CurData;
+	TWeakObjectPtr<class UFieldItemData> CurData;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<class UImage> PropertyUI;
