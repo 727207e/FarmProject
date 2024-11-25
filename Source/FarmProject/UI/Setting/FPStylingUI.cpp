@@ -113,6 +113,11 @@ void UFPStylingUI::DeactiveStylingUI()
 		FPLevel->SetPlacementModeEnable(false, nullptr);
 		EditBuildingUI->DeactiveEditBuildUI();
 	}
+
+	for (UFPBuildingButtonUI* ButtonUI : BuildingButtonArray)
+	{
+		ButtonUI->DeactiveUI();
+	}
 }
 
 void UFPStylingUI::ActiveEditBuildMode(UClickableComponent* ClickableComponent)

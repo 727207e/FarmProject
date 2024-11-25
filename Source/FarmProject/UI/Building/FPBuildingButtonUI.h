@@ -22,6 +22,7 @@ class FARMPROJECT_API UFPBuildingButtonUI : public UUserWidget
 public:
 	UFPBuildingButtonUI(const FObjectInitializer& ObjectInitializer);
 	void ButtonInit(int32 CurrentCount, UTexture2D* Image, FText Name);
+	void DeactiveUI();
 
 	void AddBuildingCount(int32 AddValue);
 	void SetBuildingCount(int32 SetValue);
