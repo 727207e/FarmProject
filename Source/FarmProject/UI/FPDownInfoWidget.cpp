@@ -74,7 +74,6 @@ void UFPDownInfoWidget::SeedSelectionChanged(FString SelectedItem, ESelectInfo::
 
 		CurData->InitStartTime();
 
-		UE_LOG(LogTemp,Error,TEXT("%s"), *CurData.Get()->GetName());
 		GameIns->AddTimeCheckArray(CurData);
 		DataChangeUI();
 	}
@@ -132,19 +131,24 @@ void UFPDownInfoWidget::ActiveUI()
 void UFPDownInfoWidget::DeactiveUI()
 {
 	this->SetVisibility(ESlateVisibility::Hidden);
+	if (GetWorld()->GetTimerManager().IsTimerActive(PlantTimerHandle))
+	{
+		GetWorld()->GetTimerManager().ClearTimer(PlantTimerHandle);
+	}
 }
 
 void UFPDownInfoWidget::DataChangeUI()
 {
+	if (GetWorld()->GetTimerManager().IsTimerActive(PlantTimerHandle))
+	{
+		GetWorld()->GetTimerManager().ClearTimer(PlantTimerHandle);
+	}
+
 	if (CurData->ECurState != EFieldState::None)
 	{
 		MainImageUI->SetBrushFromTexture(CurData->Image);
 		TitleTextUI->SetText(CurData->Name);
-
-		if (GetWorld()->GetTimerManager().IsTimerActive(PlantTimerHandle))
-		{
-			GetWorld()->GetTimerManager().ClearTimer(PlantTimerHandle);
-		}
+		SettingRemainTimeText();
 		GetWorld()->GetTimerManager().SetTimer(PlantTimerHandle, this, &UFPDownInfoWidget::SettingRemainTimeText, 0.1f, true);
 	}
 	else
@@ -157,6 +161,7 @@ void UFPDownInfoWidget::DataChangeUI()
 
 void UFPDownInfoWidget::CurUISetting(TObjectPtr<UFieldItemData> FieldData)
 {
+
 	if (CurData == nullptr)
 	{
 		CurData = FieldData;

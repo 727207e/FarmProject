@@ -89,15 +89,10 @@ void UFPGameInstance::AddTimeCheckArray(TWeakObjectPtr<UFieldItemData> Target)
 {
 	int32 InsertIndex = -1;
 
-	UE_LOG(LogTemp, Log, TEXT("Current Target: %s"), *Target->GetName());
-
 	for (int32 i = 0; i < TimeCheckArray.Num(); ++i)
 	{
-
-		UE_LOG(LogTemp, Log, TEXT("%d : %s"), i, *Target->GetName());
 		if (*Target < *TimeCheckArray[i])
 		{
-			UE_LOG(LogTemp, Log, TEXT("Change"));
 			InsertIndex = i;
 			break;
 		}
@@ -116,12 +111,6 @@ void UFPGameInstance::AddTimeCheckArray(TWeakObjectPtr<UFieldItemData> Target)
 	}
 
 	TimeCheckArray.Insert(Target, InsertIndex);
-
-	UE_LOG(LogTemp, Log, TEXT("Result"));
-	for (int32 i = 0; i < TimeCheckArray.Num(); ++i)
-	{
-		UE_LOG(LogTemp, Log, TEXT("%d : %s"), i, *TimeCheckArray[i]->GetName());
-	}
 }
 
 void UFPGameInstance::RemoveTimeCheckArray(TWeakObjectPtr<UFieldItemData> Target)
