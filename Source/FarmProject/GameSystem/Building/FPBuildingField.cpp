@@ -5,6 +5,9 @@
 #include "UI/FPHud.h"
 #include "GameSystem/Data/FieldItemData.h"
 #include "Components/StaticMeshComponent.h"
+#include "UI/Building/FPFieldDoneUI.h"
+#include "Components/WidgetComponent.h"
+#include "Components/Button.h"
 #include "Kismet/KismetMathLibrary.h"
 
 AFPBuildingField::AFPBuildingField()
@@ -28,6 +31,9 @@ AFPBuildingField::AFPBuildingField()
 	FarmMeshArray.Add(StaticMeshComponent4);
 	FarmMeshArray.Add(StaticMeshComponent5);
 	FarmMeshArray.Add(StaticMeshComponent6);
+
+	FieldFinishWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("FinishUI"));
+	FieldFinishWidget->SetupAttachment(GetRootComponent());
 }
 
 void AFPBuildingField::BeginPlay()
@@ -41,6 +47,16 @@ void AFPBuildingField::BeginPlay()
 	{
 		FieldData->OnNextState.BindUObject(this, &AFPBuildingField::ChangeStaticMesh);
 	}
+
+	DoneUI = Cast<UFPFieldDoneUI>(FieldFinishWidget->GetUserWidgetObject());
+	if (DoneUI)
+	{
+		DoneUI->OnButtonClicked.BindUObject(this, &AFPBuildingField::ClickDoneUI);
+	}
+
+	FieldFinishWidget->SetVisibility(false);
+	FieldFinishWidget->SetCollisionProfileName(TEXT("NoCollision"));
+
 	//FieldData에 비어있는 경우 빈 이미지, 등등 넣을것.
 }
 
@@ -62,6 +78,9 @@ void AFPBuildingField::ChangeStaticMesh(EFieldState ECurState)
 	}
 	else
 	{
+		FieldFinishWidget->SetVisibility(true);
+		FieldFinishWidget->SetCollisionProfileName(TEXT("UI"));
+
 		TargetMesh = FieldData->LStaticMesh;
 	}
 
@@ -69,6 +88,11 @@ void AFPBuildingField::ChangeStaticMesh(EFieldState ECurState)
 	{
 		StaticMeshComp->SetStaticMesh(TargetMesh);
 	}
+}
+
+void AFPBuildingField::ClickDoneUI()
+{
+	UE_LOG(LogTemp,Error,TEXT("Done"));
 }
 
 //FieldData에서 ResultFarmName을 기준으로 데이터를 가져와야 겠네 (근데 어디서 가져오지? -> 리스트가 있는 곳이 있어야 겠다)

@@ -25,6 +25,9 @@ public:
 	UFUNCTION()
 	void ChangeStaticMesh(EFieldState ECurState);
 
+	UFUNCTION()
+	void ClickDoneUI();
+
 protected:
 	UPROPERTY()
 	TObjectPtr<class AFPHud> MyHud;
@@ -47,6 +50,12 @@ protected:
 	TObjectPtr<UStaticMeshComponent> StaticMeshComponent5;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UStaticMeshComponent> StaticMeshComponent6;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<class UWidgetComponent> FieldFinishWidget;
+
+	UPROPERTY()
+	TObjectPtr<class UFPFieldDoneUI> DoneUI;
 
 	//본인이 가지고 있는 식물의 데이터를 가지고 있어야 함.
 	//UI 업데이트는 데이터 보내주기

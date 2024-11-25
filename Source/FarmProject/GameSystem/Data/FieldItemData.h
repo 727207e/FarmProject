@@ -64,6 +64,8 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     EFieldState ECurState = EFieldState::None;
 
+    //결과물 아이템 정보
+
     bool operator<(const UFieldItemData& Other) const
     {
         return NextNeedTime < Other.NextNeedTime;

@@ -49,8 +49,8 @@ void AFPMainController::BeginPlay()
 	UTexture2D* SpriteTexture2 = LoadedSprite2->GetBakedTexture();
 	SeedData->Image = SpriteTexture2;
 	SeedData->Name = FText::FromString("TESTSeed");
-	SeedData->NeedMTime = 15;
-	SeedData->NeedLTime = 30;
+	SeedData->NeedMTime = 3;
+	SeedData->NeedLTime = 5;
 	SeedData->MStaticMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/DownloadAsset/Farm_Islands/Meshes/Exteriors/SM_Isl_4_Plant_3.SM_Isl_4_Plant_3"));
 	SeedData->LStaticMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/DownloadAsset/Farm_Islands/Meshes/Exteriors/SM_Isl_4_Wheat_Ear_1.SM_Isl_4_Wheat_Ear_1"));
 	GameInst->AddItemToInventory(SeedData);
