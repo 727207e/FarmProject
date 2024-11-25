@@ -36,6 +36,11 @@ void UFPBuildingButtonUI::ButtonInit(int32 CurrentCount, UTexture2D* Image, FTex
 	CountText->SetText(FText::AsNumber(CurrentCount));
 }
 
+void UFPBuildingButtonUI::DeactiveUI()
+{
+	bIsOn = false;
+}
+
 void UFPBuildingButtonUI::AddBuildingCount(int32 AddValue)
 {
 	FText CurrentText = CountText->GetText();

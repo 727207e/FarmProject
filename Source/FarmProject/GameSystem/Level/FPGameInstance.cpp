@@ -2,12 +2,18 @@
 
 
 #include "GameSystem/Level/FPGameInstance.h"
+#include "GameSystem/Data/FieldItemData.h"
 #include "GameSystem/Data/ItemDataBase.h"
 #include "GameSystem/Data/BuildingItemData.h"
 #include "GameSystem/Data/SeedDataBase.h"
 
 UFPGameInstance::UFPGameInstance()
 {
+}
+
+void UFPGameInstance::GameStart()
+{
+	GetWorld()->GetTimerManager().SetTimer(TimeCheckHandle, this, &UFPGameInstance::TimeCheckTimer, 0.1f, true);
 }
 
 void UFPGameInstance::AddItemToInventory(TObjectPtr<UItemDataBase> item)
@@ -52,6 +58,64 @@ void UFPGameInstance::EditItemCount(TObjectPtr<UItemDataBase> item, int32 Num)
 			break;
 		}
 	}
+}
+
+void UFPGameInstance::TimeCheckTimer()
+{
+	FDateTime Now = FDateTime::Now();
+
+	while (!TimeCheckArray.IsEmpty())
+	{
+		TWeakObjectPtr<UFieldItemData> TopData = TimeCheckArray[0];
+
+		if (TopData->NextNeedTime < Now)
+		{
+			TopData->NextState();
+			TimeCheckArray.Remove(TopData);
+
+			if (TopData->ECurState != EFieldState::L)
+			{
+				AddTimeCheckArray(TopData);
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+}
+
+void UFPGameInstance::AddTimeCheckArray(TWeakObjectPtr<UFieldItemData> Target)
+{
+	int32 InsertIndex = -1;
+
+	for (int32 i = 0; i < TimeCheckArray.Num(); ++i)
+	{
+		if (*Target < *TimeCheckArray[i])
+		{
+			InsertIndex = i;
+			break;
+		}
+	}
+
+	if (InsertIndex == -1)
+	{
+		if (TimeCheckArray.Num() > 0)
+		{
+			InsertIndex = TimeCheckArray.Num();
+		}
+		else
+		{
+			InsertIndex = 0;
+		}
+	}
+
+	TimeCheckArray.Insert(Target, InsertIndex);
+}
+
+void UFPGameInstance::RemoveTimeCheckArray(TWeakObjectPtr<UFieldItemData> Target)
+{
+	TimeCheckArray.Remove(Target);
 }
 
 void UFPGameInstance::SortItem(TObjectPtr<UItemDataBase> item)

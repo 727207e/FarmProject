@@ -6,6 +6,15 @@
 #include "UObject/NoExportTypes.h"
 #include "FieldItemData.generated.h"
 
+UENUM(BlueprintType)
+enum class EFieldState : uint8
+{
+    None UMETA(DisplayName = "None"),
+    S UMETA(DisplayName = "Small"),
+    M UMETA(DisplayName = "Midium"),
+    L UMETA(DisplayName = "Large")
+};
+
 /**
  * 
  */
@@ -19,9 +28,14 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     UTexture2D* Image;
 
+    void InitStartTime();
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
-    int32 StartTime;
+    FDateTime StartTime;
 
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
+    FDateTime NextNeedTime;
+
+    void NextState();
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     int32 NeedMTime;
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -43,4 +57,12 @@ public:
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     FText Name;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
+    EFieldState ECurState = EFieldState::None;
+
+    bool operator<(const UFieldItemData& Other) const
+    {
+        return NextNeedTime < Other.NextNeedTime;
+    }
 };

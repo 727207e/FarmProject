@@ -43,9 +43,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class UFPBuildingButtonUI> BuildingButtonREF;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UObject> ttttt;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<TObjectPtr<class UFPBuildingButtonUI>> BuildingButtonArray;
 
