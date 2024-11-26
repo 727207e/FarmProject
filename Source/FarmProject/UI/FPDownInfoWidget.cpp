@@ -68,8 +68,8 @@ void UFPDownInfoWidget::SeedSelectionChanged(FString SelectedItem, ESelectInfo::
 		CurData->Image = SelectedObject->Image;
 		CurData->NeedMTime = SelectedObject->NeedMTime;
 		CurData->NeedLTime = SelectedObject->NeedLTime;
-		CurData->MStaticMesh = SelectedObject->MStaticMesh.GetClass();
-		CurData->LStaticMesh = SelectedObject->LStaticMesh.GetClass();
+		CurData->MStaticMesh = SelectedObject->MStaticMesh;
+		CurData->LStaticMesh = SelectedObject->LStaticMesh;
 		CurData->ECurState = EFieldState::S;
 
 		CurData->InitStartTime();

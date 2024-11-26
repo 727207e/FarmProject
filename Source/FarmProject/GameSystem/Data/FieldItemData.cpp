@@ -21,4 +21,9 @@ void UFieldItemData::NextState()
         FTimespan TimeToAdd(0, 0, NeedLTime + NeedMTime);
         NextNeedTime = StartTime + TimeToAdd;
     }
+
+    if (OnNextState.IsBound())
+    {
+        OnNextState.Execute(ECurState);
+    }
 }

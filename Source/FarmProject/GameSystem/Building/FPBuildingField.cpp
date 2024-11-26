@@ -4,10 +4,36 @@
 #include "GameSystem/Building/FPBuildingField.h"
 #include "UI/FPHud.h"
 #include "GameSystem/Data/FieldItemData.h"
+#include "Components/StaticMeshComponent.h"
+#include "UI/Building/FPFieldDoneUI.h"
+#include "Components/WidgetComponent.h"
+#include "Components/Button.h"
 #include "Kismet/KismetMathLibrary.h"
 
 AFPBuildingField::AFPBuildingField()
 {
+	StaticMeshComponent1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh1"));
+	StaticMeshComponent1->SetupAttachment(GetRootComponent());
+	StaticMeshComponent2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh2"));
+	StaticMeshComponent2->SetupAttachment(GetRootComponent());
+	StaticMeshComponent3 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh3"));
+	StaticMeshComponent3->SetupAttachment(GetRootComponent());
+	StaticMeshComponent4 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh4"));
+	StaticMeshComponent4->SetupAttachment(GetRootComponent());
+	StaticMeshComponent5 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh5"));
+	StaticMeshComponent5->SetupAttachment(GetRootComponent());
+	StaticMeshComponent6 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh6"));
+	StaticMeshComponent6->SetupAttachment(GetRootComponent());
+
+	FarmMeshArray.Add(StaticMeshComponent1);
+	FarmMeshArray.Add(StaticMeshComponent2);
+	FarmMeshArray.Add(StaticMeshComponent3);
+	FarmMeshArray.Add(StaticMeshComponent4);
+	FarmMeshArray.Add(StaticMeshComponent5);
+	FarmMeshArray.Add(StaticMeshComponent6);
+
+	FieldFinishWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("FinishUI"));
+	FieldFinishWidget->SetupAttachment(GetRootComponent());
 }
 
 void AFPBuildingField::BeginPlay()
@@ -16,10 +42,21 @@ void AFPBuildingField::BeginPlay()
 
 	MyHud = Cast<AFPHud>(GetWorld()->GetFirstPlayerController()->GetHUD());
 
-	int32 RandomNumber = UKismetMathLibrary::RandomIntegerInRange(1, 10000);
-	FString ObjectName = FString::Printf(TEXT("RandomObject_%d"), RandomNumber);
-	UE_LOG(LogTemp, Error, TEXT(" Spawn : %s") , *ObjectName);
-	FieldData = NewObject<UFieldItemData>(this, UFieldItemData::StaticClass(), FName(*ObjectName));
+	FieldData = NewObject<UFieldItemData>(this, UFieldItemData::StaticClass());
+	if (FieldData)
+	{
+		FieldData->OnNextState.BindUObject(this, &AFPBuildingField::ChangeStaticMesh);
+	}
+
+	DoneUI = Cast<UFPFieldDoneUI>(FieldFinishWidget->GetUserWidgetObject());
+	if (DoneUI)
+	{
+		DoneUI->OnButtonClicked.BindUObject(this, &AFPBuildingField::ClickDoneUI);
+	}
+
+	FieldFinishWidget->SetVisibility(false);
+	FieldFinishWidget->SetCollisionProfileName(TEXT("NoCollision"));
+
 	//FieldData에 비어있는 경우 빈 이미지, 등등 넣을것.
 }
 
@@ -29,6 +66,33 @@ void AFPBuildingField::ShowBuildingUI()
 	{
 		MyHud->DownInfoUIUpdate(FieldData);
 	}
+}
+
+void AFPBuildingField::ChangeStaticMesh(EFieldState ECurState)
+{
+	UStaticMesh* TargetMesh = nullptr;
+
+	if (ECurState == EFieldState::M)
+	{
+		TargetMesh = FieldData->MStaticMesh;
+	}
+	else
+	{
+		FieldFinishWidget->SetVisibility(true);
+		FieldFinishWidget->SetCollisionProfileName(TEXT("UI"));
+
+		TargetMesh = FieldData->LStaticMesh;
+	}
+
+	for (TObjectPtr<UStaticMeshComponent> StaticMeshComp : FarmMeshArray)
+	{
+		StaticMeshComp->SetStaticMesh(TargetMesh);
+	}
+}
+
+void AFPBuildingField::ClickDoneUI()
+{
+	UE_LOG(LogTemp,Error,TEXT("Done"));
 }
 
 //FieldData에서 ResultFarmName을 기준으로 데이터를 가져와야 겠네 (근데 어디서 가져오지? -> 리스트가 있는 곳이 있어야 겠다)
