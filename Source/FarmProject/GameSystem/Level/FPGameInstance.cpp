@@ -6,6 +6,7 @@
 #include "GameSystem/Data/ItemDataBase.h"
 #include "GameSystem/Data/BuildingItemData.h"
 #include "GameSystem/Data/SeedDataBase.h"
+#include "GameSystem/FPSingleTon.h"
 
 UFPGameInstance::UFPGameInstance()
 {
@@ -14,6 +15,9 @@ UFPGameInstance::UFPGameInstance()
 void UFPGameInstance::GameStart()
 {
 	GetWorld()->GetTimerManager().SetTimer(TimeCheckHandle, this, &UFPGameInstance::TimeCheckTimer, 0.1f, true);
+
+	UFPSingleTon::Get().LoadData();
+	UFPSingleTon::Get().SaveInventory(ItemInventory);
 }
 
 void UFPGameInstance::AddItemToInventory(TObjectPtr<UItemDataBase> item)

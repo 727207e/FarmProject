@@ -30,7 +30,7 @@ UFPSingleTon::UFPSingleTon()
 		SFXSound = SFXSoundObj.Object;
 	}
 
-	static ConstructorHelpers::FClassFinder<UFPGameSave> SaveGameClassObj(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/GameSystem/BP_FPGameSave.BP_FPGameSave_C'"));
+	static ConstructorHelpers::FClassFinder<UFPGameSave> SaveGameClassObj(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/GameSystem/Level/BP_FPGameSave.BP_FPGameSave_C'"));
 	if (SaveGameClassObj.Succeeded())
 	{
 		SaveGameSubclass = SaveGameClassObj.Class;
@@ -94,6 +94,13 @@ void UFPSingleTon::SetLanguageValue(UObject* TargetWorld, ELanguageType value)
 	FInternationalization::Get().SetCurrentCulture(GetLangStringValue(value));
 }
 
+void UFPSingleTon::SaveInventory(TArray<TObjectPtr<class UItemDataBase>> TargetArray)
+{
+	UE_LOG(LogTemp, Error, TEXT("%d"), TargetArray.Num());
+	SaveGameREF->ItemInvenSaveArray = TargetArray;
+	UGameplayStatics::SaveGameToSlot(SaveGameREF, SAVEGAME_NAME, 0);
+}
+
 void UFPSingleTon::LoadData()
 {
 	if (UGameplayStatics::DoesSaveGameExist(SAVEGAME_NAME, 0))
@@ -104,6 +111,11 @@ void UFPSingleTon::LoadData()
 		if (nullptr == SaveGameREF)
 		{
 			UE_LOG(LogTemp, Error, TEXT("%s : Can't Cast FPGameSave"), *FString(__FUNCTION__));
+		}
+
+		if (SaveGameREF)
+		{
+			UE_LOG(LogTemp, Error, TEXT("%d"), SaveGameREF->ItemInvenSaveArray.Num());
 		}
 	}
 	else

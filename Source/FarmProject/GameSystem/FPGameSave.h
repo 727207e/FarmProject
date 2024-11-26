@@ -27,4 +27,6 @@ public:
 
 	UPROPERTY()
 	ELanguageType LanguageValue = ELanguageType::Korean;
+
+	TArray<TObjectPtr<class UItemDataBase>> ItemInvenSaveArray;
 };

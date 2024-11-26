@@ -6,8 +6,6 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
-
-
 #include "GameSystem/Level/FPGameInstance.h"
 #include "PaperSprite.h"
 #include "GameSystem/Data/BuildingItemData.h"
@@ -56,6 +54,7 @@ void AFPMainController::BeginPlay()
 	GameInst->AddItemToInventory(SeedData);
 
 	GameInst->GameStart();
+
 }
 
 void AFPMainController::OnInputStartedW()

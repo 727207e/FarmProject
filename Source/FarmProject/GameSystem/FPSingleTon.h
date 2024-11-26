@@ -29,6 +29,8 @@ public:
 	FORCEINLINE float GetSFXValue() const { return SaveGameREF != nullptr ? SaveGameREF->SFXValue : 1.0f; }
 	FORCEINLINE ELanguageType GetLanguageValue() const { return SaveGameREF != nullptr ? SaveGameREF->LanguageValue : ELanguageType::Korean; }
 
+	void SaveInventory(TArray<TObjectPtr<class UItemDataBase>> TargetArray);
+
 	void LoadData();
 
 protected:
