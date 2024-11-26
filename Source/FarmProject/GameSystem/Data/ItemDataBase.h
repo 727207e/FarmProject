@@ -16,6 +16,12 @@ class FARMPROJECT_API UItemDataBase : public UObject
 
     //해당 데이터 캡슐화할것. 오직 get만 하게
 public:
+    virtual void Copy(const UItemDataBase& Other);
+
+public:
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
+    int32 Id;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 CurrentCount;
 

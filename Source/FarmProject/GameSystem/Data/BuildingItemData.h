@@ -14,4 +14,10 @@ class FARMPROJECT_API UBuildingItemData : public UItemDataBase
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void Copy(const UItemDataBase& Other) override;
+
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSubclassOf<UObject> BlueprintUI;
 };

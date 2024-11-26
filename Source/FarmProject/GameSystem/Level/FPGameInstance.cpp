@@ -6,7 +6,14 @@
 #include "GameSystem/Data/ItemDataBase.h"
 #include "GameSystem/Data/BuildingItemData.h"
 #include "GameSystem/Data/SeedDataBase.h"
+#include "GameSystem/Data/DataForm/BuildingDataCSV.h"
+#include "GameSystem/Data/DataForm/SeedDataCSV.h"
+#include "GameSystem/Data/DataForm/AnimalDataCSV.h"
 #include "GameSystem/FPSingleTon.h"
+#include "PaperSprite.h"
+
+#define BuildingCSVNum 6
+#define SeedCSVNum 9
 
 UFPGameInstance::UFPGameInstance()
 {
@@ -14,10 +21,15 @@ UFPGameInstance::UFPGameInstance()
 
 void UFPGameInstance::GameStart()
 {
+	LoadSeedCSVData();
+	LoadBuildingCSVData();
+	LoadAnimalCSVData();
+
 	GetWorld()->GetTimerManager().SetTimer(TimeCheckHandle, this, &UFPGameInstance::TimeCheckTimer, 0.1f, true);
 
 	UFPSingleTon::Get().LoadData();
 	UFPSingleTon::Get().SaveInventory(ItemInventory);
+
 }
 
 void UFPGameInstance::AddItemToInventory(TObjectPtr<UItemDataBase> item)
@@ -120,6 +132,63 @@ void UFPGameInstance::AddTimeCheckArray(TWeakObjectPtr<UFieldItemData> Target)
 void UFPGameInstance::RemoveTimeCheckArray(TWeakObjectPtr<UFieldItemData> Target)
 {
 	TimeCheckArray.Remove(Target);
+}
+
+void UFPGameInstance::LoadBuildingCSVData()
+{
+	static const FString ContextString(TEXT("Item Context"));
+	TArray<FName> RowNames = BuildingTable->GetRowNames();
+
+	for (const FName& RowName : RowNames)
+	{
+		FBuildingDataCSV* RowData = BuildingTable->FindRow<FBuildingDataCSV>(RowName, ContextString);
+		if (RowData)
+		{
+			UBuildingItemData* NewItem = NewObject<UBuildingItemData>();
+			NewItem->Id = RowData->Id;
+			NewItem->CurrentCount = 0;
+			NewItem->MaxCount = RowData->MaxCount;
+			NewItem->Image = LoadObject<UPaperSprite>(nullptr, *RowData->BuildingImagePath)->GetBakedTexture();
+			NewItem->Name = FText::FromString(RowData->Name);
+			NewItem->BlueprintObject = LoadClass<UObject>(nullptr, *RowData->BuildingBlueprintPath);
+
+			//NewItem->BlueprintUI
+
+			BuildingDataArray.Add(NewItem->Id, NewItem);
+		}
+	}
+}
+
+void UFPGameInstance::LoadSeedCSVData()
+{
+	static const FString ContextString(TEXT("Item Context"));
+	TArray<FName> RowNames = SeedTable->GetRowNames();
+
+	for (const FName& RowName : RowNames)
+	{
+		FSeedDataCSV* RowData = SeedTable->FindRow<FSeedDataCSV>(RowName, ContextString);
+		if (RowData)
+		{
+			USeedDataBase* NewItem = NewObject<USeedDataBase>();
+			NewItem->Id = RowData->Id;
+			NewItem->CurrentCount = 0;
+			NewItem->MaxCount = RowData->MaxCount;
+			NewItem->Image = LoadObject<UPaperSprite>(nullptr, *RowData->SeedImagePath)->GetBakedTexture();
+			NewItem->Name = FText::FromString(RowData->Name);
+			NewItem->NeedMTime = RowData->MNeedTime;
+			NewItem->NeedLTime = RowData->LNeedTime;
+			NewItem->MStaticMesh = LoadObject<UStaticMesh>(nullptr, *RowData->SeedMMeshPath);
+			NewItem->LStaticMesh = LoadObject<UStaticMesh>(nullptr, *RowData->SeedLMeshPath);
+
+			//NewItem->BlueprintObject
+			
+			SeedDataArray.Add(NewItem->Id, NewItem);
+		}
+	}
+}
+
+void UFPGameInstance::LoadAnimalCSVData()
+{
 }
 
 void UFPGameInstance::SortItem(TObjectPtr<UItemDataBase> item)

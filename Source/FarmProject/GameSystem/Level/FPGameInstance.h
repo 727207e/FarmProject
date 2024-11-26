@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "GameSystem/Data/DataForm/BuildingDataCSV.h"
+#include "GameSystem/Data/DataForm/SeedDataCSV.h"
+#include "GameSystem/Data/DataForm/AnimalDataCSV.h"
 #include "FPGameInstance.generated.h"
 
 /**
@@ -26,9 +29,21 @@ public:
 
 	void AddTimeCheckArray(TWeakObjectPtr<class UFieldItemData> Target);
 	void RemoveTimeCheckArray(TWeakObjectPtr<class UFieldItemData> Target);
+
+	FORCEINLINE TMap<int32, TObjectPtr<class UBuildingItemData>> GetBuildingArray() { return BuildingDataArray; }
+	FORCEINLINE TMap<int32, TObjectPtr<class USeedDataBase>> GetSeedArray() { return SeedDataArray; }
+
 public:
 	TArray<TObjectPtr<class UBuildingItemData>> BuildingInventory;
 	TArray<TObjectPtr<class USeedDataBase>> SeedInventory;
+
+protected:
+	UFUNCTION()
+	void LoadBuildingCSVData();
+	UFUNCTION()
+	void LoadSeedCSVData();
+	UFUNCTION()
+	void LoadAnimalCSVData();
 
 protected:
 	UPROPERTY()
@@ -40,6 +55,19 @@ protected:
 	TArray<TWeakObjectPtr<class UFieldItemData>> TimeCheckArray;
 
 	FTimerHandle TimeCheckHandle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UDataTable> SeedTable;
+	UPROPERTY(BlueprintReadOnly)
+	TMap<int32, TObjectPtr<class USeedDataBase>>  SeedDataArray;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UDataTable> BuildingTable;
+	UPROPERTY(BlueprintReadOnly)
+	TMap<int32, TObjectPtr<class UBuildingItemData>> BuildingDataArray;
+
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FAnimalDataCSV> AnimalDataArray;
 
 private:
 	void SortItem(TObjectPtr<class UItemDataBase> item);
