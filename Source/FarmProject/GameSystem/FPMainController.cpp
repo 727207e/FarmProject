@@ -11,6 +11,8 @@
 #include "GameSystem/Data/BuildingItemData.h"
 #include "GameSystem/Data/SeedDataBase.h"
 
+#include "GameSystem/FPSingleTon.h"
+
 AFPMainController::AFPMainController()
 {
 	bShowMouseCursor = true;
@@ -26,23 +28,23 @@ void AFPMainController::BeginPlay()
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
 
-
 	///////테스트 코드 - 인벤토리에 강제로 아이템 주입 (GameInst 에서 생성하는 로직도 만들어야 할듯 - 삭제가 안됨)
 	UE_LOG(LogTemp, Warning, TEXT("%s : Spawn Inventory Item"), TEXT(__FUNCTION__));
 	UFPGameInstance* GameInst = Cast<UFPGameInstance>(GetGameInstance());
 
 	GameInst->GameStart();
 
-	TObjectPtr<UBuildingItemData> NewItemData = NewObject<UBuildingItemData>(this);
-	NewItemData->Copy(*GameInst->GetBuildingArray()[1].Get());
-	NewItemData->CurrentCount = 10;
-	GameInst->AddItemToInventory(NewItemData);
+	//TObjectPtr<UBuildingItemData> NewItemData = NewObject<UBuildingItemData>(this);
+	//NewItemData->Copy(*GameInst->GetBuildingArray()[1].Get());
+	//NewItemData->CurrentCount = 10;
+	//GameInst->AddItemToInventory(NewItemData);
 
-	TObjectPtr<USeedDataBase> SeedTe = NewObject<USeedDataBase>(this);
-	SeedTe->Copy(*GameInst->GetSeedArray()[1].Get());
-	SeedTe->CurrentCount = 10;
-	GameInst->AddItemToInventory(SeedTe);
+	//TObjectPtr<USeedDataBase> SeedTe = NewObject<USeedDataBase>(this);
+	//SeedTe->Copy(*GameInst->GetSeedArray()[1].Get());
+	//SeedTe->CurrentCount = 10;
+	//GameInst->AddItemToInventory(SeedTe);
 
+	//GameInst->SaveGame();
 }
 
 void AFPMainController::OnInputStartedW()

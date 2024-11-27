@@ -24,6 +24,8 @@ public:
 	void AddItemToInventory(TObjectPtr<class UItemDataBase> item);
 	void EditItemCount(TObjectPtr<class UItemDataBase> item, int32 Num);
 
+	void SaveGame();
+
 	UFUNCTION()
 	void TimeCheckTimer();
 
@@ -44,6 +46,8 @@ protected:
 	void LoadSeedCSVData();
 	UFUNCTION()
 	void LoadAnimalCSVData();
+
+	void LoadInven();
 
 protected:
 	UPROPERTY()

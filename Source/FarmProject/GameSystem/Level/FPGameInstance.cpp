@@ -9,6 +9,8 @@
 #include "GameSystem/Data/DataForm/BuildingDataCSV.h"
 #include "GameSystem/Data/DataForm/SeedDataCSV.h"
 #include "GameSystem/Data/DataForm/AnimalDataCSV.h"
+#include "GameSystem/Data/SaveDataStructForm/InvenSaveForm.h"
+#include "GameSystem/Data/SaveDataStructForm/FieldSaveForm.h"
 #include "GameSystem/FPSingleTon.h"
 #include "PaperSprite.h"
 
@@ -28,8 +30,7 @@ void UFPGameInstance::GameStart()
 	GetWorld()->GetTimerManager().SetTimer(TimeCheckHandle, this, &UFPGameInstance::TimeCheckTimer, 0.1f, true);
 
 	UFPSingleTon::Get().LoadData();
-	UFPSingleTon::Get().SaveInventory(ItemInventory);
-
+	LoadInven();
 }
 
 void UFPGameInstance::AddItemToInventory(TObjectPtr<UItemDataBase> item)
@@ -74,6 +75,12 @@ void UFPGameInstance::EditItemCount(TObjectPtr<UItemDataBase> item, int32 Num)
 			break;
 		}
 	}
+}
+
+void UFPGameInstance::SaveGame()
+{
+	UFPSingleTon::Get().SaveInventory(ItemInventory);
+	UFPSingleTon::Get().SaveField(ItemInventory);
 }
 
 void UFPGameInstance::TimeCheckTimer()
@@ -189,6 +196,35 @@ void UFPGameInstance::LoadSeedCSVData()
 
 void UFPGameInstance::LoadAnimalCSVData()
 {
+}
+
+void UFPGameInstance::LoadInven()
+{
+	TArray<FInvenSaveForm> LoadInvenArray = UFPSingleTon::Get().LoadInven();
+	for (FInvenSaveForm FormData : LoadInvenArray)
+	{
+		TObjectPtr<UItemDataBase> Item;
+		if(FormData.ItemForm == 1) 
+		{
+			Item = NewObject<UBuildingItemData>(GetWorld());
+			Item->Copy(*GetBuildingArray()[FormData.Id].Get());
+		}
+		else if(FormData.ItemForm == 2) 
+		{
+			Item = NewObject<USeedDataBase>(GetWorld());
+			Item->Copy(*GetSeedArray()[FormData.Id].Get());
+		}
+
+		if (Item == nullptr)
+		{
+			continue;
+		}
+		else
+		{
+			Item->CurrentCount = FormData.CurrentCount;
+			AddItemToInventory(Item);
+		}
+	}
 }
 
 void UFPGameInstance::SortItem(TObjectPtr<UItemDataBase> item)

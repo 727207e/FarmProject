@@ -6,6 +6,11 @@
 #include "Internationalization/Internationalization.h"
 #include "Info/NameDefine.h"
 #include "GameSystem/FPGameSave.h"
+#include "GameSystem/Data/ItemDataBase.h"
+#include "GameSystem/Data/BuildingItemData.h"
+#include "GameSystem/Data/SeedDataBase.h"
+#include "GameSystem/Data/SaveDataStructForm/InvenSaveForm.h"
+#include "GameSystem/Data/SaveDataStructForm/FieldSaveForm.h"
 #include "Sound/SoundMix.h"
 #include "Sound/SoundClass.h"
 
@@ -94,11 +99,26 @@ void UFPSingleTon::SetLanguageValue(UObject* TargetWorld, ELanguageType value)
 	FInternationalization::Get().SetCurrentCulture(GetLangStringValue(value));
 }
 
-void UFPSingleTon::SaveInventory(TArray<TObjectPtr<class UItemDataBase>> TargetArray)
+void UFPSingleTon::SaveInventory(TArray<TObjectPtr<UItemDataBase>> TargetArray)
 {
-	UE_LOG(LogTemp, Error, TEXT("%d"), TargetArray.Num());
-	SaveGameREF->ItemInvenSaveArray = TargetArray;
+	for (TObjectPtr<UItemDataBase> Target : TargetArray)
+	{
+		FInvenSaveForm SaveForm;
+		SaveForm.Id = Target->Id;
+		SaveForm.CurrentCount = Target->CurrentCount;
+		if(Target->IsA<UBuildingItemData>()) SaveForm.ItemForm = 1;
+		else if(Target->IsA<USeedDataBase>()) SaveForm.ItemForm = 2;
+
+		SaveGameREF->ItemInvenSaveArray.Add(SaveForm);
+	}
+
 	UGameplayStatics::SaveGameToSlot(SaveGameREF, SAVEGAME_NAME, 0);
+}
+
+void UFPSingleTon::SaveField(TArray<TObjectPtr<class UItemDataBase>> TargetArray)
+{
+	//UE_LOG(LogTemp, Error, TEXT("%d"), TargetArray.Num());
+	//UGameplayStatics::SaveGameToSlot(SaveGameREF, SAVEGAME_NAME, 0);
 }
 
 void UFPSingleTon::LoadData()
@@ -107,16 +127,6 @@ void UFPSingleTon::LoadData()
 	{
 		SaveGameREF = Cast<UFPGameSave>(UGameplayStatics::LoadGameFromSlot(SAVEGAME_NAME, 0));
 		SetLanguageValue(GetWorld(), SaveGameREF->LanguageValue);
-
-		if (nullptr == SaveGameREF)
-		{
-			UE_LOG(LogTemp, Error, TEXT("%s : Can't Cast FPGameSave"), *FString(__FUNCTION__));
-		}
-
-		if (SaveGameREF)
-		{
-			UE_LOG(LogTemp, Error, TEXT("%d"), SaveGameREF->ItemInvenSaveArray.Num());
-		}
 	}
 	else
 	{
@@ -134,5 +144,34 @@ FString UFPSingleTon::GetLangStringValue(ELanguageType LangType)
 			return "en";
 		default:
 			return "en";
+	}
+}
+
+TArray<FInvenSaveForm> UFPSingleTon::LoadInven()
+{
+	TArray<FInvenSaveForm> TargetArray;
+
+	if (UGameplayStatics::DoesSaveGameExist(SAVEGAME_NAME, 0))
+	{
+		SaveGameREF = Cast<UFPGameSave>(UGameplayStatics::LoadGameFromSlot(SAVEGAME_NAME, 0));
+		TargetArray = SaveGameREF->ItemInvenSaveArray;
+	}
+	else
+	{
+		SaveGameREF = Cast<UFPGameSave>(UGameplayStatics::CreateSaveGameObject(SaveGameSubclass));
+	}
+	return TargetArray;
+}
+
+void UFPSingleTon::LoadField()
+{
+	if (UGameplayStatics::DoesSaveGameExist(SAVEGAME_NAME, 0))
+	{
+		SaveGameREF = Cast<UFPGameSave>(UGameplayStatics::LoadGameFromSlot(SAVEGAME_NAME, 0));
+		SetLanguageValue(GetWorld(), SaveGameREF->LanguageValue);
+	}
+	else
+	{
+		SaveGameREF = Cast<UFPGameSave>(UGameplayStatics::CreateSaveGameObject(SaveGameSubclass));
 	}
 }
