@@ -14,6 +14,7 @@
 #include "GameSystem/Building/FPBuilding.h"
 #include "GameSystem/Building/FPBuildingField.h"
 #include "GameSystem/FPSingleTon.h"
+#include "GameSystem/Level/MainFPLevelScript.h"
 #include "PaperSprite.h"
 #include "GameSystem/Building/ActorComponent/ClickableComponent.h"
 
@@ -256,6 +257,9 @@ void UFPGameInstance::LoadField()
 					Clickable->RegisterComponent();
 
 					BuildActor->UpdateClickInfo();
+
+					AMainFPLevelScript* Ma = Cast<AMainFPLevelScript>(GetWorld()->GetLevelScriptActor());
+					Ma->AddField(BuildActor);
 				}
 			}
 		}
