@@ -11,6 +11,7 @@
 #include "GameSystem/Data/SeedDataBase.h"
 #include "GameSystem/Data/SaveDataStructForm/InvenSaveForm.h"
 #include "GameSystem/Data/SaveDataStructForm/FieldSaveForm.h"
+#include "GameSystem/Building/FPBuilding.h"
 #include "Sound/SoundMix.h"
 #include "Sound/SoundClass.h"
 
@@ -115,10 +116,23 @@ void UFPSingleTon::SaveInventory(TArray<TObjectPtr<UItemDataBase>> TargetArray)
 	UGameplayStatics::SaveGameToSlot(SaveGameREF, SAVEGAME_NAME, 0);
 }
 
-void UFPSingleTon::SaveField(TArray<TObjectPtr<class UItemDataBase>> TargetArray)
+void UFPSingleTon::SaveField(TArray<TObjectPtr<class AFPBuilding>> TargetArray)
 {
-	//UE_LOG(LogTemp, Error, TEXT("%d"), TargetArray.Num());
-	//UGameplayStatics::SaveGameToSlot(SaveGameREF, SAVEGAME_NAME, 0);
+	for (TObjectPtr<AFPBuilding> Target : TargetArray)
+	{
+		FFieldSaveForm SaveForm;
+		SaveForm.Id = Target->BuildingData->Id;
+		SaveForm.Transform = Target->GetTransform();
+		SaveForm.Date = Target->GetStartTime();
+		if (Target->IsA<AFPBuilding>()) SaveForm.ItemForm = 1;
+
+		if (SaveGameREF->FieldSaveArray.Find(SaveForm) == INDEX_NONE)
+		{
+			SaveGameREF->FieldSaveArray.Add(SaveForm);
+		}
+	}
+
+	UGameplayStatics::SaveGameToSlot(SaveGameREF, SAVEGAME_NAME, 0);
 }
 
 void UFPSingleTon::LoadData()
@@ -163,15 +177,19 @@ TArray<FInvenSaveForm> UFPSingleTon::LoadInven()
 	return TargetArray;
 }
 
-void UFPSingleTon::LoadField()
+TArray<FFieldSaveForm> UFPSingleTon::LoadField()
 {
+	TArray<FFieldSaveForm> TargetArray;
+
 	if (UGameplayStatics::DoesSaveGameExist(SAVEGAME_NAME, 0))
 	{
 		SaveGameREF = Cast<UFPGameSave>(UGameplayStatics::LoadGameFromSlot(SAVEGAME_NAME, 0));
-		SetLanguageValue(GetWorld(), SaveGameREF->LanguageValue);
+		TargetArray = SaveGameREF->FieldSaveArray;
 	}
 	else
 	{
 		SaveGameREF = Cast<UFPGameSave>(UGameplayStatics::CreateSaveGameObject(SaveGameSubclass));
 	}
+
+	return TargetArray;
 }

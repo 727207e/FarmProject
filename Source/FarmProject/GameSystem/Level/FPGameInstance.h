@@ -48,6 +48,7 @@ protected:
 	void LoadAnimalCSVData();
 
 	void LoadInven();
+	void LoadField();
 
 protected:
 	UPROPERTY()
@@ -72,6 +73,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FAnimalDataCSV> AnimalDataArray;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UClickableComponent> ClickableComponentREF;
 
 private:
 	void SortItem(TObjectPtr<class UItemDataBase> item);

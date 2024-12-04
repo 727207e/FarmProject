@@ -19,21 +19,18 @@ public:
 	UFUNCTION()
 	virtual void ShowBuildingUI();
 
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString Name;
+	virtual FDateTime GetStartTime() { return FDateTime(); }
 
+public:
 	UPROPERTY()
 	TObjectPtr<class UBuildingItemData> BuildingData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<class USceneComponent> RootComp;
 
-protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget> BuildingUIClass;
 
-private:
 	UPROPERTY()
 	TObjectPtr<UUserWidget> BuildingUI;
 };

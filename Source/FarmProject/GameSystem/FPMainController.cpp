@@ -34,17 +34,15 @@ void AFPMainController::BeginPlay()
 
 	GameInst->GameStart();
 
-	//TObjectPtr<UBuildingItemData> NewItemData = NewObject<UBuildingItemData>(this);
-	//NewItemData->Copy(*GameInst->GetBuildingArray()[1].Get());
-	//NewItemData->CurrentCount = 10;
-	//GameInst->AddItemToInventory(NewItemData);
+	TObjectPtr<UBuildingItemData> NewItemData = NewObject<UBuildingItemData>(this);
+	NewItemData->Copy(*GameInst->GetBuildingArray()[1].Get());
+	NewItemData->CurrentCount = 10;
+	GameInst->AddItemToInventory(NewItemData);
 
-	//TObjectPtr<USeedDataBase> SeedTe = NewObject<USeedDataBase>(this);
-	//SeedTe->Copy(*GameInst->GetSeedArray()[1].Get());
-	//SeedTe->CurrentCount = 10;
-	//GameInst->AddItemToInventory(SeedTe);
-
-	//GameInst->SaveGame();
+	TObjectPtr<USeedDataBase> SeedTe = NewObject<USeedDataBase>(this);
+	SeedTe->Copy(*GameInst->GetSeedArray()[1].Get());
+	SeedTe->CurrentCount = 10;
+	GameInst->AddItemToInventory(SeedTe);
 }
 
 void AFPMainController::OnInputStartedW()

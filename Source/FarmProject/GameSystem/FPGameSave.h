@@ -32,4 +32,7 @@ public:
 
 	UPROPERTY()
 	TArray<FInvenSaveForm> ItemInvenSaveArray;
+
+	UPROPERTY()
+	TArray<FFieldSaveForm> FieldSaveArray;
 };

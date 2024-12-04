@@ -28,6 +28,8 @@ public:
 	UFUNCTION()
 	void ClickDoneUI();
 
+	virtual FDateTime GetStartTime() override { return FieldData->StartTime; }
+
 protected:
 	UPROPERTY()
 	TObjectPtr<class AFPHud> MyHud;

@@ -11,8 +11,11 @@
 #include "GameSystem/Data/DataForm/AnimalDataCSV.h"
 #include "GameSystem/Data/SaveDataStructForm/InvenSaveForm.h"
 #include "GameSystem/Data/SaveDataStructForm/FieldSaveForm.h"
+#include "GameSystem/Building/FPBuilding.h"
+#include "GameSystem/Building/FPBuildingField.h"
 #include "GameSystem/FPSingleTon.h"
 #include "PaperSprite.h"
+#include "GameSystem/Building/ActorComponent/ClickableComponent.h"
 
 #define BuildingCSVNum 6
 #define SeedCSVNum 9
@@ -31,6 +34,7 @@ void UFPGameInstance::GameStart()
 
 	UFPSingleTon::Get().LoadData();
 	LoadInven();
+	LoadField();
 }
 
 void UFPGameInstance::AddItemToInventory(TObjectPtr<UItemDataBase> item)
@@ -80,7 +84,6 @@ void UFPGameInstance::EditItemCount(TObjectPtr<UItemDataBase> item, int32 Num)
 void UFPGameInstance::SaveGame()
 {
 	UFPSingleTon::Get().SaveInventory(ItemInventory);
-	UFPSingleTon::Get().SaveField(ItemInventory);
 }
 
 void UFPGameInstance::TimeCheckTimer()
@@ -223,6 +226,44 @@ void UFPGameInstance::LoadInven()
 		{
 			Item->CurrentCount = FormData.CurrentCount;
 			AddItemToInventory(Item);
+		}
+	}
+}
+
+void UFPGameInstance::LoadField()
+{
+	TArray<FFieldSaveForm> LoadInvenArray = UFPSingleTon::Get().LoadField();
+
+	for (FFieldSaveForm FormData : LoadInvenArray)
+	{
+		TObjectPtr<AFPBuilding> Item;
+		if (FormData.ItemForm == 1)
+		{
+			FActorSpawnParameters SpawnParameters;
+			SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			TObjectPtr<UBuildingItemData> BuildingData = BuildingDataArray.FindRef(FormData.Id);
+
+			AFPBuilding* BuildActor = GetWorld()->SpawnActor<AFPBuilding>(BuildingData->BlueprintObject, FormData.Transform, SpawnParameters);
+			BuildActor->BuildingData = BuildingData;
+
+			if (BuildActor && *ClickableComponentREF)
+			{
+				UClickableComponent* Clickable = NewObject<UClickableComponent>(BuildActor, ClickableComponentREF);
+
+				if (Clickable)
+				{
+					BuildActor->AddInstanceComponent(Clickable);
+					Clickable->RegisterComponent();
+
+					BuildActor->UpdateClickInfo();
+				}
+			}
+		}
+
+		if (Item == nullptr)
+		{
+			continue;
 		}
 	}
 }

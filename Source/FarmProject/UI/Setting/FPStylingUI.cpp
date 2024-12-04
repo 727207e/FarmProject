@@ -47,7 +47,7 @@ void UFPStylingUI::DeleteBuilding(AActor* Target)
 	{
 		return;
 	}
-	FString BuildingName = BuildingInfo->Name;
+	FString BuildingName = BuildingInfo->BuildingData->Name.ToString();
 
 	bool bIsFind = false;
 	for (TObjectPtr<UFPBuildingButtonUI> Button : BuildingButtonArray)
@@ -76,7 +76,7 @@ void UFPStylingUI::BuildingMoveSelect(AActor* Target)
 	{
 		return;
 	}
-	FString BuildingName = BuildingInfo->Name;
+	FString BuildingName = BuildingInfo->BuildingData->Name.ToString();
 	BuildingInfo->BuildingData->CurrentCount += 1;
 
 	bool bIsFind = false;

@@ -8,6 +8,8 @@
 #include "GameSystem/Data/BuildingItemData.h"
 #include "GameSystem/Building/FPBuilding.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameSystem/Level/FPGameInstance.h"
+#include "GameSystem/FPSingleTon.h"
 
 AMainFPLevelScript::AMainFPLevelScript()
 {
@@ -44,6 +46,7 @@ void AMainFPLevelScript::DeactiveBuildMode()
 		GridManager->DeactivGrid();
 	}
 }
+
 
 void AMainFPLevelScript::SetPlacementModeEnable(bool IsEnabled, TObjectPtr<UBuildingItemData> TargetData)
 {
@@ -117,6 +120,9 @@ void AMainFPLevelScript::SpawnBuilding()
 					Clickable->RegisterComponent();
 
 					BuildActor->UpdateClickInfo();
+
+					FieldArray.Add(BuildActor);
+					SaveCurLevel();
 				}
 
 				if (OnSpawnBuilding.IsBound())
@@ -126,6 +132,17 @@ void AMainFPLevelScript::SpawnBuilding()
 			}
 		}
 	}
+}
+
+void AMainFPLevelScript::SaveCurLevel()
+{
+	UFPGameInstance* GameIns = Cast<UFPGameInstance>(GetWorld()->GetGameInstance());
+	if (GameIns)
+	{
+		GameIns->SaveGame();
+	}
+
+	UFPSingleTon::Get().SaveField(FieldArray);
 }
 
 void AMainFPLevelScript::UpdatePlacement()
