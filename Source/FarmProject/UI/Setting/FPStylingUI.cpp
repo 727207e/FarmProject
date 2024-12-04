@@ -12,6 +12,7 @@
 #include "GameSystem/Level/FPGameInstance.h"
 #include "GameSystem/Building/FPBuilding.h"
 #include "UI/Building/FPEditBuildingUI.h"
+#include "GameSystem/Building/GridCell.h"
 
 #define BuildingScrollBoxUIName TEXT("BuildingScrollBox_UI")
 #define EditBuildingUIName TEXT("EditBuilding_UI")
@@ -47,7 +48,7 @@ void UFPStylingUI::DeleteBuilding(AActor* Target)
 	{
 		return;
 	}
-	FString BuildingName = BuildingInfo->Name;
+	FString BuildingName = BuildingInfo->BuildingData->Name.ToString();
 
 	bool bIsFind = false;
 	for (TObjectPtr<UFPBuildingButtonUI> Button : BuildingButtonArray)
@@ -57,6 +58,17 @@ void UFPStylingUI::DeleteBuilding(AActor* Target)
 			Button->AddBuildingCount(1);
 			GameInst->EditItemCount(BuildingInfo->BuildingData, 1);
 			bIsFind = true;
+
+			TArray<AActor*> OverlappingActors;
+			BuildingInfo->GetOverlappingActors(OverlappingActors, AGridCell::StaticClass());
+
+			for (AActor* Actor : OverlappingActors)
+			{
+				if (AGridCell* GridCellActor = Cast<AGridCell>(Actor))
+				{
+					GridCellActor->ResetGridState();
+				}
+			}
 			break;
 		}
 	}
@@ -76,7 +88,7 @@ void UFPStylingUI::BuildingMoveSelect(AActor* Target)
 	{
 		return;
 	}
-	FString BuildingName = BuildingInfo->Name;
+	FString BuildingName = BuildingInfo->BuildingData->Name.ToString();
 	BuildingInfo->BuildingData->CurrentCount += 1;
 
 	bool bIsFind = false;
@@ -88,6 +100,17 @@ void UFPStylingUI::BuildingMoveSelect(AActor* Target)
 			GameInst->EditItemCount(BuildingInfo->BuildingData, 1);
 			Button->OnButtonClicked();
 			bIsFind = true;
+
+			TArray<AActor*> OverlappingActors;
+			BuildingInfo->GetOverlappingActors(OverlappingActors, AGridCell::StaticClass());
+
+			for (AActor* Actor : OverlappingActors)
+			{
+				if (AGridCell* GridCellActor = Cast<AGridCell>(Actor))
+				{
+					GridCellActor->ResetGridState();
+				}
+			}
 			break;
 		}
 	}

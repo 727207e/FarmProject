@@ -3,6 +3,7 @@
 
 #include "GameSystem/Building/GridCell.h"
 #include "Components/StaticMeshComponent.h"
+#include "GameSystem/Building/FPBuilding.h"
 #include "Components/SceneComponent.h"
 
 AGridCell::AGridCell()
@@ -12,6 +13,17 @@ AGridCell::AGridCell()
 
 	GridMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GridMesh"));
 	GridMesh->SetupAttachment(RootComp);
+}
+
+void AGridCell::CheckBuilding()
+{
+	TArray<AActor*> OverlappingActors;
+	GetOverlappingActors(OverlappingActors, AFPBuilding::StaticClass());
+	
+	if (!OverlappingActors.IsEmpty())
+	{
+		UpdateGridState(EBuildState::OverlapBuilding);
+	}
 }
 
 void AGridCell::ResetGridState()

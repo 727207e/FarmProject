@@ -6,12 +6,12 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
-
-
 #include "GameSystem/Level/FPGameInstance.h"
 #include "PaperSprite.h"
 #include "GameSystem/Data/BuildingItemData.h"
 #include "GameSystem/Data/SeedDataBase.h"
+
+#include "GameSystem/FPSingleTon.h"
 
 AFPMainController::AFPMainController()
 {
@@ -32,30 +32,17 @@ void AFPMainController::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("%s : Spawn Inventory Item"), TEXT(__FUNCTION__));
 	UFPGameInstance* GameInst = Cast<UFPGameInstance>(GetGameInstance());
 
+	GameInst->GameStart();
+
 	TObjectPtr<UBuildingItemData> NewItemData = NewObject<UBuildingItemData>(this);
+	NewItemData->Copy(*GameInst->GetBuildingArray()[1].Get());
 	NewItemData->CurrentCount = 10;
-	NewItemData->MaxCount = 99;
-	UPaperSprite* LoadedSprite = LoadObject<UPaperSprite>(nullptr, TEXT("/Game/DownloadAsset/Ground_Game_UI/Sprites/Buttons/Active/Button__14__Sprite.Button__14__Sprite"));
-	UTexture2D* SpriteTexture = LoadedSprite->GetBakedTexture();
-	NewItemData->Image = SpriteTexture;
-	NewItemData->Name = FText::FromString("TESTBuild");
-	NewItemData->BlueprintObject = LoadClass<UObject>(nullptr, TEXT("/Game/Blueprint/Building/BP_Field.BP_Field_C"));
 	GameInst->AddItemToInventory(NewItemData);
 
-	TObjectPtr<USeedDataBase> SeedData = NewObject<USeedDataBase>(this);
-	SeedData->CurrentCount = 10;
-	SeedData->MaxCount = 99;
-	UPaperSprite* LoadedSprite2 = LoadObject<UPaperSprite>(nullptr, TEXT("/Game/DownloadAsset/Ground_Game_UI/Sprites/Buttons/Active/Button__10__Sprite.Button__10__Sprite"));
-	UTexture2D* SpriteTexture2 = LoadedSprite2->GetBakedTexture();
-	SeedData->Image = SpriteTexture2;
-	SeedData->Name = FText::FromString("TESTSeed");
-	SeedData->NeedMTime = 3;
-	SeedData->NeedLTime = 5;
-	SeedData->MStaticMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/DownloadAsset/Farm_Islands/Meshes/Exteriors/SM_Isl_4_Plant_3.SM_Isl_4_Plant_3"));
-	SeedData->LStaticMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/DownloadAsset/Farm_Islands/Meshes/Exteriors/SM_Isl_4_Wheat_Ear_1.SM_Isl_4_Wheat_Ear_1"));
-	GameInst->AddItemToInventory(SeedData);
-
-	GameInst->GameStart();
+	TObjectPtr<USeedDataBase> SeedTe = NewObject<USeedDataBase>(this);
+	SeedTe->Copy(*GameInst->GetSeedArray()[1].Get());
+	SeedTe->CurrentCount = 10;
+	GameInst->AddItemToInventory(SeedTe);
 }
 
 void AFPMainController::OnInputStartedW()

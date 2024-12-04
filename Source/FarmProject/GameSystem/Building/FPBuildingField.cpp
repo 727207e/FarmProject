@@ -94,6 +94,5 @@ void AFPBuildingField::ClickDoneUI()
 {
 	UE_LOG(LogTemp,Error,TEXT("Done"));
 }
-
 //FieldData에서 ResultFarmName을 기준으로 데이터를 가져와야 겠네 (근데 어디서 가져오지? -> 리스트가 있는 곳이 있어야 겠다)
 

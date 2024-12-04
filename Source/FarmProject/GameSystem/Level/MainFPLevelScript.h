@@ -24,7 +24,10 @@ public:
 	virtual void DeactiveBuildMode() override;
 	virtual void SpawnBuilding() override;
 
+	void SaveCurLevel();
+
 	void SetPlacementModeEnable(bool IsEnabled, TObjectPtr<class UBuildingItemData> TargetData = nullptr);
+	FORCEINLINE void AddField(TObjectPtr<class AFPBuilding> Target) { FieldArray.Add(Target); }
 	FORCEINLINE bool GetIsPlacementMode() { return bIsPlacementModeEnable; }
 	FORCEINLINE bool GetIsBuildMode() { return bIsBuildModeEnable; }
 
@@ -58,6 +61,9 @@ protected:
 
 	UPROPERTY()
 	FTimerHandle TimerHandle;
+
+	UPROPERTY()
+	TArray<TObjectPtr<class AFPBuilding>> FieldArray;
 
 private:
 	void UpdatePlacement();

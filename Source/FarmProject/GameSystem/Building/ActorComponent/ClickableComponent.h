@@ -20,10 +20,4 @@ public:
 	void OnDestroySelf();
 
 	FOnClick OnClicked;
-
-protected:
-	virtual void BeginPlay() override;
-
-	UPROPERTY()
-	TSet<TObjectPtr<class AGridCell>> OverlappedGridSet;
 };

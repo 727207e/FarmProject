@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
 #include "Info/NameDefine.h"
+#include "GameSystem/Data/SaveDataStructForm/InvenSaveForm.h"
+#include "GameSystem/Data/SaveDataStructForm/FieldSaveForm.h"
 #include "FPGameSave.generated.h"
 
 /**
@@ -27,4 +29,10 @@ public:
 
 	UPROPERTY()
 	ELanguageType LanguageValue = ELanguageType::Korean;
+
+	UPROPERTY()
+	TArray<FInvenSaveForm> ItemInvenSaveArray;
+
+	UPROPERTY()
+	TArray<FFieldSaveForm> FieldSaveArray;
 };

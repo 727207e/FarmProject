@@ -33,9 +33,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class AGridCell> GridCellREF;
 
-private:
+protected:
 	void PopulateGrid();
 
-private:
-	TArray<TObjectPtr<AActor>> GridArray;
+protected:
+	UPROPERTY()
+	TArray<TObjectPtr<AGridCell>> GridArray;
+
 };

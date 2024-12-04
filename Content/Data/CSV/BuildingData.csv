@@ -1,0 +1,3 @@
+,Id,Name,MaxCount,BuildingUIPath,BuildingBlueprintPath,BuildingImagePath
+1,1_1,TESTBuild,99,,/Game/Blueprint/Building/BP_Field.BP_Field_C,/Game/DownloadAsset/Ground_Game_UI/Sprites/Buttons/Active/Button__14__Sprite.Button__14__Sprite
+2,1_2,TESTBuild,99,,/Game/Blueprint/Building/BP_Field.BP_Field_C,/Game/DownloadAsset/Ground_Game_UI/Sprites/Buttons/Active/Button__14__Sprite.Button__14__Sprite

@@ -6,6 +6,20 @@
 #include "GameSystem/Data/ItemDataBase.h"
 #include "GameSystem/Data/BuildingItemData.h"
 #include "GameSystem/Data/SeedDataBase.h"
+#include "GameSystem/Data/DataForm/BuildingDataCSV.h"
+#include "GameSystem/Data/DataForm/SeedDataCSV.h"
+#include "GameSystem/Data/DataForm/AnimalDataCSV.h"
+#include "GameSystem/Data/SaveDataStructForm/InvenSaveForm.h"
+#include "GameSystem/Data/SaveDataStructForm/FieldSaveForm.h"
+#include "GameSystem/Building/FPBuilding.h"
+#include "GameSystem/Building/FPBuildingField.h"
+#include "GameSystem/FPSingleTon.h"
+#include "GameSystem/Level/MainFPLevelScript.h"
+#include "PaperSprite.h"
+#include "GameSystem/Building/ActorComponent/ClickableComponent.h"
+
+#define BuildingCSVNum 6
+#define SeedCSVNum 9
 
 UFPGameInstance::UFPGameInstance()
 {
@@ -13,7 +27,15 @@ UFPGameInstance::UFPGameInstance()
 
 void UFPGameInstance::GameStart()
 {
+	LoadSeedCSVData();
+	LoadBuildingCSVData();
+	LoadAnimalCSVData();
+
 	GetWorld()->GetTimerManager().SetTimer(TimeCheckHandle, this, &UFPGameInstance::TimeCheckTimer, 0.1f, true);
+
+	UFPSingleTon::Get().LoadData();
+	LoadInven();
+	LoadField();
 }
 
 void UFPGameInstance::AddItemToInventory(TObjectPtr<UItemDataBase> item)
@@ -58,6 +80,11 @@ void UFPGameInstance::EditItemCount(TObjectPtr<UItemDataBase> item, int32 Num)
 			break;
 		}
 	}
+}
+
+void UFPGameInstance::SaveGame()
+{
+	UFPSingleTon::Get().SaveInventory(ItemInventory);
 }
 
 void UFPGameInstance::TimeCheckTimer()
@@ -116,6 +143,132 @@ void UFPGameInstance::AddTimeCheckArray(TWeakObjectPtr<UFieldItemData> Target)
 void UFPGameInstance::RemoveTimeCheckArray(TWeakObjectPtr<UFieldItemData> Target)
 {
 	TimeCheckArray.Remove(Target);
+}
+
+void UFPGameInstance::LoadBuildingCSVData()
+{
+	static const FString ContextString(TEXT("Item Context"));
+	TArray<FName> RowNames = BuildingTable->GetRowNames();
+
+	for (const FName& RowName : RowNames)
+	{
+		FBuildingDataCSV* RowData = BuildingTable->FindRow<FBuildingDataCSV>(RowName, ContextString);
+		if (RowData)
+		{
+			UBuildingItemData* NewItem = NewObject<UBuildingItemData>();
+			NewItem->Id = RowData->Id;
+			NewItem->CurrentCount = 0;
+			NewItem->MaxCount = RowData->MaxCount;
+			NewItem->Image = LoadObject<UPaperSprite>(nullptr, *RowData->BuildingImagePath)->GetBakedTexture();
+			NewItem->Name = FText::FromString(RowData->Name);
+			NewItem->BlueprintObject = LoadClass<UObject>(nullptr, *RowData->BuildingBlueprintPath);
+
+			//NewItem->BlueprintUI
+
+			BuildingDataArray.Add(NewItem->Id, NewItem);
+		}
+	}
+}
+
+void UFPGameInstance::LoadSeedCSVData()
+{
+	static const FString ContextString(TEXT("Item Context"));
+	TArray<FName> RowNames = SeedTable->GetRowNames();
+
+	for (const FName& RowName : RowNames)
+	{
+		FSeedDataCSV* RowData = SeedTable->FindRow<FSeedDataCSV>(RowName, ContextString);
+		if (RowData)
+		{
+			USeedDataBase* NewItem = NewObject<USeedDataBase>();
+			NewItem->Id = RowData->Id;
+			NewItem->CurrentCount = 0;
+			NewItem->MaxCount = RowData->MaxCount;
+			NewItem->Image = LoadObject<UPaperSprite>(nullptr, *RowData->SeedImagePath)->GetBakedTexture();
+			NewItem->Name = FText::FromString(RowData->Name);
+			NewItem->NeedMTime = RowData->MNeedTime;
+			NewItem->NeedLTime = RowData->LNeedTime;
+			NewItem->MStaticMesh = LoadObject<UStaticMesh>(nullptr, *RowData->SeedMMeshPath);
+			NewItem->LStaticMesh = LoadObject<UStaticMesh>(nullptr, *RowData->SeedLMeshPath);
+
+			//NewItem->BlueprintObject
+			
+			SeedDataArray.Add(NewItem->Id, NewItem);
+		}
+	}
+}
+
+void UFPGameInstance::LoadAnimalCSVData()
+{
+}
+
+void UFPGameInstance::LoadInven()
+{
+	TArray<FInvenSaveForm> LoadInvenArray = UFPSingleTon::Get().LoadInven();
+	for (FInvenSaveForm FormData : LoadInvenArray)
+	{
+		TObjectPtr<UItemDataBase> Item;
+		if(FormData.ItemForm == 1) 
+		{
+			Item = NewObject<UBuildingItemData>(GetWorld());
+			Item->Copy(*GetBuildingArray()[FormData.Id].Get());
+		}
+		else if(FormData.ItemForm == 2) 
+		{
+			Item = NewObject<USeedDataBase>(GetWorld());
+			Item->Copy(*GetSeedArray()[FormData.Id].Get());
+		}
+
+		if (Item == nullptr)
+		{
+			continue;
+		}
+		else
+		{
+			Item->CurrentCount = FormData.CurrentCount;
+			AddItemToInventory(Item);
+		}
+	}
+}
+
+void UFPGameInstance::LoadField()
+{
+	TArray<FFieldSaveForm> LoadInvenArray = UFPSingleTon::Get().LoadField();
+	for (FFieldSaveForm FormData : LoadInvenArray)
+	{
+		TObjectPtr<AFPBuilding> Item;
+		if (FormData.ItemForm == 1)
+		{
+			FActorSpawnParameters SpawnParameters;
+			SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			TObjectPtr<UBuildingItemData> BuildingData = BuildingDataArray.FindRef(FormData.Id);
+
+			AFPBuilding* BuildActor = GetWorld()->SpawnActor<AFPBuilding>(BuildingData->BlueprintObject, FormData.Transform, SpawnParameters);
+			BuildActor->BuildingData = BuildingData;
+
+			if (BuildActor && *ClickableComponentREF)
+			{
+				UClickableComponent* Clickable = NewObject<UClickableComponent>(BuildActor, ClickableComponentREF);
+
+				if (Clickable)
+				{
+					BuildActor->AddInstanceComponent(Clickable);
+					Clickable->RegisterComponent();
+
+					BuildActor->UpdateClickInfo();
+
+					AMainFPLevelScript* Ma = Cast<AMainFPLevelScript>(GetWorld()->GetLevelScriptActor());
+					Ma->AddField(BuildActor);
+				}
+			}
+		}
+
+		if (Item == nullptr)
+		{
+			continue;
+		}
+	}
 }
 
 void UFPGameInstance::SortItem(TObjectPtr<UItemDataBase> item)
