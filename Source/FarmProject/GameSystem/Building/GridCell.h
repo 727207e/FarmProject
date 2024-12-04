@@ -23,6 +23,8 @@ class FARMPROJECT_API AGridCell : public AActor
 public:	
 	AGridCell();
 
+	void CheckBuilding();
+
 	void ResetGridState();
 	void UpdateGridState(EBuildState CurState);
 	FORCEINLINE EBuildState GetBuildState() { return MyState; }

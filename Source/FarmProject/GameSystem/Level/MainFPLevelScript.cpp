@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameSystem/Level/FPGameInstance.h"
 #include "GameSystem/FPSingleTon.h"
+#include "GameSystem/Building/GridCell.h"
 
 AMainFPLevelScript::AMainFPLevelScript()
 {
@@ -112,6 +113,17 @@ void AMainFPLevelScript::SpawnBuilding()
 
 			if(BuildActor && *ClickableComponentREF)
 			{
+				TArray<AActor*> OverlappingActors;
+				BuildActor->GetOverlappingActors(OverlappingActors, AGridCell::StaticClass());
+
+				for (AActor* Actor : OverlappingActors)
+				{
+					if (AGridCell* GridCellActor = Cast<AGridCell>(Actor))
+					{
+						GridCellActor->UpdateGridState(EBuildState::OverlapBuilding);
+					}
+				}
+
 				UClickableComponent* Clickable= NewObject<UClickableComponent>(BuildActor, ClickableComponentREF);
 
 				if (Clickable)

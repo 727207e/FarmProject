@@ -118,6 +118,7 @@ void UFPSingleTon::SaveInventory(TArray<TObjectPtr<UItemDataBase>> TargetArray)
 
 void UFPSingleTon::SaveField(TArray<TObjectPtr<class AFPBuilding>> TargetArray)
 {
+	TArray<FFieldSaveForm> FieldSaveArray;
 	for (TObjectPtr<AFPBuilding> Target : TargetArray)
 	{
 		FFieldSaveForm SaveForm;
@@ -126,12 +127,10 @@ void UFPSingleTon::SaveField(TArray<TObjectPtr<class AFPBuilding>> TargetArray)
 		SaveForm.Date = Target->GetStartTime();
 		if (Target->IsA<AFPBuilding>()) SaveForm.ItemForm = 1;
 
-		if (SaveGameREF->FieldSaveArray.Find(SaveForm) == INDEX_NONE)
-		{
-			SaveGameREF->FieldSaveArray.Add(SaveForm);
-		}
+		FieldSaveArray.Add(SaveForm);
 	}
 
+	SaveGameREF->FieldSaveArray = FieldSaveArray;
 	UGameplayStatics::SaveGameToSlot(SaveGameREF, SAVEGAME_NAME, 0);
 }
 

@@ -14,18 +14,17 @@ void UGridManager::StartGrid()
     {
         PopulateGrid();
     }
-    else
+
+    for (AGridCell* GridActor : GridArray)
     {
-        for (AActor* GridActor : GridArray)
-        {
-            GridActor->SetActorHiddenInGame(false);
-        }
+        GridActor->SetActorHiddenInGame(false);
+        GridActor->CheckBuilding();
     }
 }
 
 void UGridManager::DeactivGrid()
 {
-    for (AActor* GridActor : GridArray)
+    for (AGridCell* GridActor : GridArray)
     {
         GridActor->SetActorHiddenInGame(true);
     }
@@ -49,11 +48,10 @@ void UGridManager::PopulateGrid()
             FActorSpawnParameters SpawnParameters;
             SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-            GridArray.Add(GetWorld()->SpawnActor<AActor>(GridCellREF, resultTransform, SpawnParameters));
+            GridArray.Add(GetWorld()->SpawnActor<AGridCell>(GridCellREF, resultTransform, SpawnParameters));
         }
     }
 }
-
 
 FVector UGridManager::GetClosestGridPosition(FVector InPoition)
 {

@@ -233,7 +233,6 @@ void UFPGameInstance::LoadInven()
 void UFPGameInstance::LoadField()
 {
 	TArray<FFieldSaveForm> LoadInvenArray = UFPSingleTon::Get().LoadField();
-
 	for (FFieldSaveForm FormData : LoadInvenArray)
 	{
 		TObjectPtr<AFPBuilding> Item;
