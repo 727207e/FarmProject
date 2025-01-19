@@ -22,6 +22,8 @@ public:
 
 	UFUNCTION()
 	void OpenStylingUI();
+	UFUNCTION()
+	void OpenInventoryUI();
 
 	//동물도 같은 메소드 사용
 	//이때 파라미터만 수정해서 사용하면 될듯.

@@ -12,11 +12,16 @@ DECLARE_DELEGATE(FOnInputTriggeredS);
 DECLARE_DELEGATE(FOnInputTriggeredA);
 DECLARE_DELEGATE(FOnInputTriggeredD);
 DECLARE_DELEGATE(FOnInputTriggeredO);
+DECLARE_DELEGATE(FOnInputTriggeredI);
 DECLARE_DELEGATE(FOnInputTriggeredMouseRight);
 DECLARE_DELEGATE(FOnInputTriggeredMouseLeft);
 DECLARE_DELEGATE_OneParam(FOnInputTriggeredWheel, float);
 
 class UInputAction;
+
+/*
+* 아이템 추가
+*/
 
 UCLASS()
 class FARMPROJECT_API AFPMainController : public APlayerController
@@ -41,6 +46,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UInputAction> KeyO;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UInputAction> KeyI;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UInputAction> MouseRightClick;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UInputAction> MouseLeftClick;
@@ -51,7 +59,9 @@ public:
 	FOnInputTriggeredS OnInputTriggeredS;
 	FOnInputTriggeredA OnInputTriggeredA;
 	FOnInputTriggeredD OnInputTriggeredD;
-	FOnInputTriggeredD OnInputTriggeredO;
+	FOnInputTriggeredO OnInputTriggeredO;
+	FOnInputTriggeredI OnInputTriggeredI;
+
 	FOnInputTriggeredMouseRight OnInputTriggeredMouseRight;
 	FOnInputTriggeredMouseLeft OnInputTriggeredMouseLeft;
 	FOnInputTriggeredWheel OnInputTriggeredWheel;
@@ -67,6 +77,8 @@ protected:
 	void OnInputStartedD();
 	UFUNCTION()
 	void OnInputStartedO();
+	UFUNCTION()
+	void OnInputStartedI();
 	UFUNCTION()
 	void OnInputStartedMouseRight();
 	UFUNCTION()

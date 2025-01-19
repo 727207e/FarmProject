@@ -50,6 +50,7 @@ void AFPCameraPawn::PossessedBy(AController* NewController)
 		if (MyHud)
 		{
 			FPCont->OnInputTriggeredO.BindUObject(MyHud, &AFPHud::OpenStylingUI);
+			FPCont->OnInputTriggeredI.BindUObject(MyHud, &AFPHud::OpenInventoryUI);
 		}
 
 		IBuildManagerInterface* MyBuildInterface = Cast<IBuildManagerInterface>(GetWorld()->GetLevelScriptActor());

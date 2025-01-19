@@ -10,7 +10,9 @@
 #include "FPGameInstance.generated.h"
 
 /**
- * 
+ * Inventory
+ * Data Form
+ * 실제 아이템 form
  */
 UCLASS()
 class FARMPROJECT_API UFPGameInstance : public UGameInstance

@@ -39,6 +39,11 @@ void AFPHud::OpenStylingUI()
     }
 }
 
+void AFPHud::OpenInventoryUI()
+{
+    UE_LOG(LogTemp, Error, TEXT("11"));
+}
+
 void AFPHud::DownInfoUIUpdate(TObjectPtr<UFieldItemData> FieldData)
 {
     DownInfoUI->CurUISetting(FieldData);
