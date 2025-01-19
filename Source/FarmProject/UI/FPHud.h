@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "UI/FPUserWidget.h"
 #include "FPHud.generated.h"
 
 class UClickableComponent;
@@ -37,15 +38,19 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
-	TSubclassOf<UUserWidget> StylingUIClass;
+	TSubclassOf<UFPUserWidget> StylingUIClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
-	TSubclassOf<UUserWidget> DownInfoUIClass;
+	TSubclassOf<UFPUserWidget> DownInfoUIClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UFPUserWidget> InventoryUIClass;
 
 private:
 	UPROPERTY()
 	TObjectPtr<class UFPStylingUI> StylingUI;
 	UPROPERTY()
 	TObjectPtr<class UFPDownInfoWidget> DownInfoUI;
+	UPROPERTY()
+	TObjectPtr<class UFPInventoryUI> InventoryUI;
 
 	UPROPERTY()
 	TScriptInterface<class IBuildManagerInterface> BuildManager;

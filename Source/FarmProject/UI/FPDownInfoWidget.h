@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "UI/FPUserWidget.h"
 #include "FPDownInfoWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FARMPROJECT_API UFPDownInfoWidget : public UUserWidget
+class FARMPROJECT_API UFPDownInfoWidget : public UFPUserWidget
 {
 	GENERATED_BODY()
 

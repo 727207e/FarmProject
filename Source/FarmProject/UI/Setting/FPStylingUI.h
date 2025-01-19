@@ -5,22 +5,22 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "UI/Building/FPBuildingButtonUI.h"
+#include "UI/FPUserWidget.h"
 #include "FPStylingUI.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FARMPROJECT_API UFPStylingUI : public UUserWidget
+class FARMPROJECT_API UFPStylingUI : public UFPUserWidget
 {
 	GENERATED_BODY()
 	
 public:
 	UFPStylingUI(const FObjectInitializer& ObjectInitializer);
 
-	void ActiveStylingUI();
-	void DeactiveStylingUI();
-
+	virtual void ActiveUI() override;
+	virtual void DeactiveUI() override;
 	UFUNCTION()
 	void ActiveEditBuildMode(class UClickableComponent* ClickableComponent);
 

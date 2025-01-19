@@ -9,6 +9,7 @@
 #include "UI/Setting/FPStylingUI.h"
 #include "GameSystem/Data/FieldItemData.h"
 #include "UI/FPDownInfoWidget.h"
+#include "UI/Inventory/FPInventoryUI.h"
 
 AFPHud::AFPHud()
 {
@@ -21,7 +22,7 @@ void AFPHud::OpenStylingUI()
         if (StylingUI->IsVisible())
         {
             StylingUI->SetVisibility(ESlateVisibility::Hidden);
-            StylingUI->DeactiveStylingUI();
+            StylingUI->DeactiveUI();
             if (BuildManager != nullptr)
             {
                 BuildManager->DeactiveBuildMode();
@@ -30,7 +31,7 @@ void AFPHud::OpenStylingUI()
         else
         {
             StylingUI->SetVisibility(ESlateVisibility::Visible);
-            StylingUI->ActiveStylingUI();
+            StylingUI->ActiveUI();
             if (BuildManager != nullptr)
             {
                 BuildManager->ActiveBuildMode();
@@ -42,6 +43,19 @@ void AFPHud::OpenStylingUI()
 void AFPHud::OpenInventoryUI()
 {
     UE_LOG(LogTemp, Error, TEXT("11"));
+    if (InventoryUI)
+    {
+        if (InventoryUI->IsVisible())
+        {
+            InventoryUI->SetVisibility(ESlateVisibility::Hidden);
+            InventoryUI->DeactiveUI();
+        }
+        else
+        {
+            InventoryUI->SetVisibility(ESlateVisibility::Visible);
+            InventoryUI->ActiveUI();
+        }
+    }
 }
 
 void AFPHud::DownInfoUIUpdate(TObjectPtr<UFieldItemData> FieldData)
@@ -60,6 +74,15 @@ void AFPHud::BeginPlay()
             StylingUI->SetVisibility(ESlateVisibility::Hidden);
 
             OnClickClickableComp.BindUObject(StylingUI, &UFPStylingUI::ActiveEditBuildMode);
+        }
+    }    
+    if (InventoryUI == nullptr)
+    {
+        InventoryUI = Cast<UFPInventoryUI>(CreateWidget<UUserWidget>(GetWorld(), InventoryUIClass));
+        if (InventoryUI)
+        {
+            InventoryUI->AddToViewport();
+            InventoryUI->SetVisibility(ESlateVisibility::Hidden);
         }
     }
     if (DownInfoUI == nullptr)

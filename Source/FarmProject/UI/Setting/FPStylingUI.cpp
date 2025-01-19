@@ -123,13 +123,13 @@ void UFPStylingUI::BuildingMoveSelect(AActor* Target)
 	}
 }
 
-void UFPStylingUI::ActiveStylingUI()
+void UFPStylingUI::ActiveUI()
 {
 	GetInventory();
 	ScrollBoxSetup();
 }
 
-void UFPStylingUI::DeactiveStylingUI()
+void UFPStylingUI::DeactiveUI()
 {
 	if (FPLevel)
 	{
