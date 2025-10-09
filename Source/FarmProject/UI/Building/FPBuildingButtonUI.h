@@ -7,6 +7,7 @@
 #include "Components/TextBlock.h"
 #include "FPBuildingButtonUI.generated.h"
 
+class UBuildingItemData;
 DECLARE_DELEGATE(FBuildingButtonActiveDelegate);
 DECLARE_DELEGATE(FBuildingButtonDeactiveDelegate);
 
@@ -21,7 +22,7 @@ class FARMPROJECT_API UFPBuildingButtonUI : public UUserWidget
 	
 public:
 	UFPBuildingButtonUI(const FObjectInitializer& ObjectInitializer);
-	void ButtonInit(int32 CurrentCount, UTexture2D* Image, FText Name);
+	void ButtonInit(const TObjectPtr<UBuildingItemData> Data);
 	void DeactiveUI();
 
 	void AddBuildingCount(int32 AddValue);
@@ -39,6 +40,11 @@ public:
 protected:
 	virtual void NativeConstruct() override;
 
+	void OnButtonActive();
+	void OnButtonDeactive();
+
+	void SpawnBuilding();
+	
 protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<class UButton> BuildingButton;
@@ -53,5 +59,7 @@ private:
 	void FindUI();
 
 private:
+	TWeakObjectPtr<class UBuildingItemData> BuildingData;
+	
 	bool bIsOn = false;
 };

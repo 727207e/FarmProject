@@ -161,73 +161,42 @@ void UFPStylingUI::GetInventory()
 
 void UFPStylingUI::ScrollBoxSetup()
 {
-	for (int32 i = 0; i < GameInst->BuildingInventory.Num(); ++i)
+	for (const TObjectPtr<UBuildingItemData> BuildingData : GameInst->BuildingInventory)
 	{
-		TObjectPtr<UBuildingItemData> data = GameInst->BuildingInventory[i];
-
-		bool bIsFind = false;
-		for (UFPBuildingButtonUI* ButtonUI : BuildingButtonArray)
+		if (BuildingData == nullptr)
 		{
-			//ÀÌ¹Ì UI°¡ ¹èÄ¡µÈ °æ¿ì
-			if (data->Name.ToString().Equals(ButtonUI->GetBuildingName()))
-			{
-				ButtonUI->SetBuildingCount(data->CurrentCount);
-				bIsFind = true;
-				break;
-			}
-		}
-
-		if (bIsFind)
-		{
+			UE_LOG(LogTemp, Error, TEXT("%hs : Can't Find BuildingData"), __func__);
 			continue;
 		}
-
-		//»õ·Î¿î UI¸¦ ¹èÄ¡ÇØ¾ßÇÏ´Â °æ¿ì
-		GenerateBuildingButtonUI(data);
+		
+		TObjectPtr<UFPBuildingButtonUI> TargetUIButton;
+		if (IsAlreadyGenUI(BuildingData, TargetUIButton))
+		{
+			//ì´ë¯¸ ìžˆìœ¼ë©´ ê°±ì‹ 
+			TargetUIButton->SetBuildingCount(BuildingData->CurrentCount);
+		}
+		else
+		{
+			//ìƒˆë¡œìš´ UIë¥¼ ë°°ì¹˜í•´ì•¼í•˜ëŠ” ê²½ìš°
+			GenerateBuildingButtonUI(BuildingData);	
+		}
 	}
 }
 
-TObjectPtr<class UFPBuildingButtonUI> UFPStylingUI::GenerateBuildingButtonUI(TObjectPtr<UBuildingItemData> Data)
+TObjectPtr<class UFPBuildingButtonUI> UFPStylingUI::GenerateBuildingButtonUI(const TObjectPtr<UBuildingItemData> Data)
 {
 	UFPBuildingButtonUI* NewButton = CreateWidget<UFPBuildingButtonUI>(this, BuildingButtonREF);
-	if (NewButton)
+	if (NewButton == nullptr)
 	{
-		NewButton->ButtonInit(Data->CurrentCount, Data->Image, Data->Name);
-
-		NewButton->OnBuildingButtonActive.BindLambda([this, Data, NewButton]()
-			{
-				if (FPLevel)
-				{
-					FPLevel->SetPlacementModeEnable(true, Data);
-					FPLevel->OnSpawnBuilding.BindLambda([this, &Data, NewButton]()
-						{
-							NewButton->AddBuildingCount(-1);
-							int32 curCount = Data->CurrentCount - 1;
-
-							GameInst->EditItemCount(Data, -1);
-
-							if (curCount <= 0)
-							{
-								FPLevel->SetPlacementModeEnable(false);
-								RemoveBuildingButton(NewButton);
-							}
-						});
-				}
-			});
-		NewButton->OnBuildingButtonDeactive.BindLambda([this, &Data]()
-			{
-				if (FPLevel)
-				{
-					FPLevel->SetPlacementModeEnable(false, Data);
-					FPLevel->OnSpawnBuilding.Unbind();
-				}
-			});
-
-		BuildingButtonArray.Add(NewButton);
-		if (BuildingScrollBox)
-		{
-			BuildingScrollBox->AddChild(NewButton);
-		}
+		UE_LOG(LogTemp, Error, TEXT("%hs : Fail Generate BuildingButton"), __func__);
+		return nullptr;
+	}
+	
+	NewButton->ButtonInit(Data);
+	BuildingButtonArray.Add(NewButton);
+	if (BuildingScrollBox)
+	{
+		BuildingScrollBox->AddChild(NewButton);
 	}
 
 	return NewButton;
@@ -244,4 +213,31 @@ void UFPStylingUI::RemoveBuildingButton(UFPBuildingButtonUI* ButtonToRemove)
 
 	ButtonToRemove->RemoveFromParent();
 	ButtonToRemove = nullptr;
+}
+
+bool UFPStylingUI::IsAlreadyGenUI(const TObjectPtr<UBuildingItemData> InData, TObjectPtr<UFPBuildingButtonUI>& OutTargetUI)
+{
+	if (InData == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%hs : Can't Find InData"), __func__);
+		return false;
+	}
+	
+	for (TObjectPtr<UFPBuildingButtonUI> ButtonUI : BuildingButtonArray)
+	{
+		if (ButtonUI == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("%hs : Can't Find ButtonUI"), __func__);
+			continue;
+		}
+		
+		//ì´ë¯¸ UIê°€ ë°°ì¹˜ëœ ê²½ìš°
+		if (InData->Name.ToString().Equals(ButtonUI->GetBuildingName()))
+		{
+			OutTargetUI = ButtonUI;
+			return true;
+		}
+	}
+
+	return false;
 }

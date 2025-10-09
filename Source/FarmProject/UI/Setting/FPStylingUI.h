@@ -8,6 +8,7 @@
 #include "UI/FPUserWidget.h"
 #include "FPStylingUI.generated.h"
 
+class UBuildingItemData;
 /**
  * 
  */
@@ -24,6 +25,8 @@ public:
 	UFUNCTION()
 	void ActiveEditBuildMode(class UClickableComponent* ClickableComponent);
 
+	void RemoveBuildingButton(UFPBuildingButtonUI* ButtonToRemove);
+
 protected:
 	virtual void NativeConstruct() override;
 
@@ -32,9 +35,6 @@ protected:
 
 	UFUNCTION()
 	void BuildingMoveSelect(AActor* Target);
-
-	UFUNCTION()
-	void RemoveBuildingButton(UFPBuildingButtonUI* ButtonToRemove);
 
 protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -58,7 +58,9 @@ protected:
 private:
 	void GetInventory();
 	void ScrollBoxSetup();
-	TObjectPtr<class UFPBuildingButtonUI> GenerateBuildingButtonUI(TObjectPtr<class UBuildingItemData> Data);
+	bool IsAlreadyGenUI(const TObjectPtr<UBuildingItemData> InData, TObjectPtr<UFPBuildingButtonUI>& OutTargetUI);
+	
+	TObjectPtr<class UFPBuildingButtonUI> GenerateBuildingButtonUI(const TObjectPtr<class UBuildingItemData> Data);
 
 private:
 	TObjectPtr<class AMainFPLevelScript> FPLevel;

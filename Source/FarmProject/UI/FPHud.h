@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -26,9 +26,11 @@ public:
 	UFUNCTION()
 	void OpenInventoryUI();
 
-	//µ¿¹°µµ °°Àº ¸Ş¼Òµå »ç¿ë
-	//ÀÌ¶§ ÆÄ¶ó¹ÌÅÍ¸¸ ¼öÁ¤ÇØ¼­ »ç¿ëÇÏ¸é µÉµí.
-	//Field ¶û Animal ÀÌ¶û ÀÌ·¸°Ô ÇØ¼­.
+	FORCEINLINE TWeakObjectPtr<class UFPStylingUI> GetStylingUI() const { return StylingUI; };
+	
+	//ë™ë¬¼ë„ ê°™ì€ ë©”ì†Œë“œ ì‚¬ìš©
+	//ì´ë•Œ íŒŒë¼ë¯¸í„°ë§Œ ìˆ˜ì •í•´ì„œ ì‚¬ìš©í•˜ë©´ ë ë“¯.
+	//Field ë‘ Animal ì´ë‘ ì´ë ‡ê²Œ í•´ì„œ.
 	void DownInfoUIUpdate(TObjectPtr<class UFieldItemData> FieldData);
 
 	FOnClickClickabeComp OnClickClickableComp;

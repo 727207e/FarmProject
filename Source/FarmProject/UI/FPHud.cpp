@@ -42,7 +42,6 @@ void AFPHud::OpenStylingUI()
 
 void AFPHud::OpenInventoryUI()
 {
-    UE_LOG(LogTemp, Error, TEXT("11"));
     if (InventoryUI)
     {
         if (InventoryUI->IsVisible())
