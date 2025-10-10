@@ -33,6 +33,7 @@ void UFPInventoryUI::OnTabButtonSelect(const EFPInventoryItemType InSelectType)
 			
 			case EFPInventoryItemType::Animal:
 			BP_OnSwitchChange(EFPInventoryItemType::Animal);
+			UpdateAnimalInven();
 			break;
 			
 			case EFPInventoryItemType::Building:
@@ -49,7 +50,15 @@ void UFPInventoryUI::OnTabButtonSelect(const EFPInventoryItemType InSelectType)
 			
 			default:
 			break;
-		} }
+		}
+	}
+}
+
+void UFPInventoryUI::UpdateAnimalInven()
+{
+	//인벤에서 Animal 데이터 가져오기
+	//데이터 가져와서 UObject 제작
+	//제작한거 ListView에 추가
 }
 
 void UFPInvenAnimalItem::NativeOnListItemObjectSet(UObject* ListItemObject)

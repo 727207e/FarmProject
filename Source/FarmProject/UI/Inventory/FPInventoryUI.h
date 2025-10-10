@@ -42,7 +42,8 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_OnSwitchChange(const EFPInventoryItemType InSelectType);
-	
+
+	void UpdateAnimalInven();
 };
 
 

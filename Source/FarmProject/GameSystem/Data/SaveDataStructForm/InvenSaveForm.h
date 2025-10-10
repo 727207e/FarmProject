@@ -3,6 +3,16 @@
 #include "CoreMinimal.h"
 #include "InvenSaveForm.generated.h"
 
+UENUM(BlueprintType)
+enum class EItemForm : uint8
+{
+	None = 0,
+	Building = 1,
+	Seed,
+	Animal
+};
+
+
 USTRUCT(BlueprintType)
 struct FInvenSaveForm
 {
@@ -13,7 +23,7 @@ public:
 	int32 Id = 0;
 
     UPROPERTY()
-    int32 ItemForm = 0; // 1 : Building , 2 : Seed , 3 : Animal
+    EItemForm ItemForm = EItemForm::None;
 
     UPROPERTY()
     int32 CurrentCount;

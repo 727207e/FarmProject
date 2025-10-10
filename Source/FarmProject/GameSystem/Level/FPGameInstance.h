@@ -4,11 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "GameSystem/Data/AnimalDataBase.h"
 #include "GameSystem/Data/DataForm/BuildingDataCSV.h"
 #include "GameSystem/Data/DataForm/SeedDataCSV.h"
 #include "GameSystem/Data/DataForm/AnimalDataCSV.h"
+#include "UI/Inventory/FPInventoryUI.h"
 #include "FPGameInstance.generated.h"
 
+struct FInvenSaveForm;
+class UAnimalDataBase;
 /**
  * Inventory
  * Data Form
@@ -25,7 +29,8 @@ public:
 	void GameStart();
 	void AddItemToInventory(TObjectPtr<class UItemDataBase> item);
 	void EditItemCount(TObjectPtr<class UItemDataBase> item, int32 Num);
-
+	void AddInven(const FInvenSaveForm& InFormData);
+	
 	void SaveGame();
 
 	UFUNCTION()
@@ -36,10 +41,12 @@ public:
 
 	FORCEINLINE TMap<int32, TObjectPtr<class UBuildingItemData>> GetBuildingArray() { return BuildingDataArray; }
 	FORCEINLINE TMap<int32, TObjectPtr<class USeedDataBase>> GetSeedArray() { return SeedDataArray; }
+	FORCEINLINE TMap<int32, TObjectPtr<UAnimalDataBase>> GetAnimalArray() { return AnimalDataArray; }
 
 public:
 	TArray<TObjectPtr<class UBuildingItemData>> BuildingInventory;
 	TArray<TObjectPtr<class USeedDataBase>> SeedInventory;
+	TArray<TObjectPtr<UAnimalDataBase>> AnimalInventory;
 
 protected:
 	UFUNCTION()

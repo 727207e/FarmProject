@@ -2,6 +2,7 @@
 
 
 #include "GameSystem/Level/FPGameInstance.h"
+
 #include "GameSystem/Data/FieldItemData.h"
 #include "GameSystem/Data/ItemDataBase.h"
 #include "GameSystem/Data/BuildingItemData.h"
@@ -22,6 +23,64 @@
 //TODO : 데이터 기록 방식을 FString에서 TSoftObjectPtr 로 변경할 것 (Seed, Building)
 //TODO : 바로 로드하는 방식 말고, 필요에 의해 로드해야할때 비동기 로드로 로드할 것 (지금은 모두 들고있는 형태)
 //TODO : 로드하는 클래스를 따로 만들것 (Subsystem으로 분리 필요)
+//TODO : 데이터를 통으로 복사해서 가져오지 말고 고정된 데이터는 두고, 가변되는 데이터(갯수, 위치, 시간 등)만 인벤에 넣기
+
+//TODO : 치트 매니저로 이동
+static FAutoConsoleCommand CVarAddItemCheat(
+	TEXT("AddItem"),
+	TEXT("AddItem <ID> <Type> <Amount> - Adds an item to the inventory via UFPGameInstance.\n")
+	TEXT("ID: Item identifier (int, >0)\n")
+	TEXT("Amount: Number of items (int, >0)")
+	TEXT("Type: Item type (int, >=0)\n"),
+	FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
+	{
+		for (TObjectIterator<UWorld> It; It; ++It)
+		{
+			UWorld* World = *It;
+			if (World && World->IsGameWorld())
+			{
+				if (UFPGameInstance* GameIns = Cast<UFPGameInstance>(World->GetGameInstance()))
+				{
+					// FInvenSaveForm 구성
+					int32 ID = FCString::Atoi(*Args[0]);
+					int32 Amount = FCString::Atoi(*Args[1]);
+					int32 TypeInt = FCString::Atoi(*Args[2]);
+					
+					// Type을 EItemForm으로 변환
+					EItemForm Type;
+					if (TypeInt == 1)
+					{
+						Type = EItemForm::Building;
+					}
+					else if (TypeInt == 2)
+					{
+						Type = EItemForm::Seed;
+					}
+					else if (TypeInt == 3)
+					{
+						Type = EItemForm::Animal;
+					}
+					else
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Invalid Type: %d. Use 1 (Building), 2 (Seed), 3 (Animal)"), TypeInt);
+						return;
+					}
+					
+					FInvenSaveForm InvenSave;
+					InvenSave.Id = ID;
+					InvenSave.ItemForm = Type;
+					InvenSave.CurrentCount = Amount;
+
+					// AddInven 메서드 직접 호출
+					GameIns->AddInven(InvenSave);
+
+					UE_LOG(LogTemp, Log, TEXT("Add Inven Success"));
+				}
+			}
+		}
+	}),
+	ECVF_Default
+);
 
 UFPGameInstance::UFPGameInstance()
 {
@@ -81,6 +140,42 @@ void UFPGameInstance::EditItemCount(TObjectPtr<UItemDataBase> item, int32 Num)
 			item = nullptr;
 			break;
 		}
+	}
+}
+
+void UFPGameInstance::AddInven(const FInvenSaveForm& InFormData)
+{
+	TObjectPtr<UItemDataBase> Item;
+	switch (InFormData.ItemForm)
+	{
+	case EItemForm::Animal:
+		Item = NewObject<UAnimalDataBase>(GetWorld());
+		Item->Copy(*GetAnimalArray()[InFormData.Id].Get());
+		break;
+
+	case EItemForm::Building:
+		Item = NewObject<UBuildingItemData>(GetWorld());
+		Item->Copy(*GetBuildingArray()[InFormData.Id].Get());
+		break;
+
+	case EItemForm::Seed:
+		Item = NewObject<USeedDataBase>(GetWorld());
+		Item->Copy(*GetSeedArray()[InFormData.Id].Get());
+		break;
+
+	default:
+		UE_LOG(LogTemp, Error, TEXT("%hs : Can't Define ItemForm"), __func__);
+		break;
+	}
+		
+	if (Item == nullptr)
+	{
+		return;
+	}
+	else
+	{
+		Item->CurrentCount = InFormData.CurrentCount;
+		AddItemToInventory(Item);
 	}
 }
 
@@ -203,7 +298,7 @@ void UFPGameInstance::LoadAnimalCSVData()
 
 	for (const FName& RowName : RowNames)
 	{
-		FAnimalDataCSV* RowData = SeedTable->FindRow<FAnimalDataCSV>(RowName, ContextString);
+		FAnimalDataCSV* RowData = AnimalTable->FindRow<FAnimalDataCSV>(RowName, ContextString);
 		if (RowData)
 		{
 			UAnimalDataBase* NewItem = NewObject<UAnimalDataBase>();
@@ -225,27 +320,7 @@ void UFPGameInstance::LoadInven()
 	TArray<FInvenSaveForm> LoadInvenArray = UFPSingleTon::Get().LoadInven();
 	for (FInvenSaveForm FormData : LoadInvenArray)
 	{
-		TObjectPtr<UItemDataBase> Item;
-		if(FormData.ItemForm == 1) 
-		{
-			Item = NewObject<UBuildingItemData>(GetWorld());
-			Item->Copy(*GetBuildingArray()[FormData.Id].Get());
-		}
-		else if(FormData.ItemForm == 2) 
-		{
-			Item = NewObject<USeedDataBase>(GetWorld());
-			Item->Copy(*GetSeedArray()[FormData.Id].Get());
-		}
-
-		if (Item == nullptr)
-		{
-			continue;
-		}
-		else
-		{
-			Item->CurrentCount = FormData.CurrentCount;
-			AddItemToInventory(Item);
-		}
+		AddInven(FormData);
 	}
 }
 

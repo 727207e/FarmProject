@@ -107,8 +107,8 @@ void UFPSingleTon::SaveInventory(TArray<TObjectPtr<UItemDataBase>> TargetArray)
 		FInvenSaveForm SaveForm;
 		SaveForm.Id = Target->Id;
 		SaveForm.CurrentCount = Target->CurrentCount;
-		if(Target->IsA<UBuildingItemData>()) SaveForm.ItemForm = 1;
-		else if(Target->IsA<USeedDataBase>()) SaveForm.ItemForm = 2;
+		if(Target->IsA<UBuildingItemData>()) SaveForm.ItemForm = EItemForm::Building;
+		else if(Target->IsA<USeedDataBase>()) SaveForm.ItemForm = EItemForm::Seed;
 
 		SaveGameREF->ItemInvenSaveArray.Add(SaveForm);
 	}
