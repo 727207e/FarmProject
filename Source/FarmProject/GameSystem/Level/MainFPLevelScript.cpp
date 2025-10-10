@@ -7,7 +7,6 @@
 #include "GameSystem/Building/ActorComponent/ClickableComponent.h"
 #include "GameSystem/Data/BuildingItemData.h"
 #include "GameSystem/Building/FPBuilding.h"
-#include "Kismet/GameplayStatics.h"
 #include "GameSystem/Level/FPGameInstance.h"
 #include "GameSystem/FPSingleTon.h"
 #include "GameSystem/Building/GridCell.h"

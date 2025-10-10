@@ -12,7 +12,7 @@
 /**
  * Inventory
  * Data Form
- * ½ÇÁ¦ ¾ÆÀÌÅÛ form
+ * ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ form
  */
 UCLASS()
 class FARMPROJECT_API UFPGameInstance : public UGameInstance
@@ -73,9 +73,11 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	TMap<int32, TObjectPtr<class UBuildingItemData>> BuildingDataArray;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UDataTable> AnimalTable;
 	UPROPERTY(BlueprintReadOnly)
-	TArray<FAnimalDataCSV> AnimalDataArray;
-
+	TMap<int32, TObjectPtr<class UAnimalDataBase>> AnimalDataArray;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class UClickableComponent> ClickableComponentREF;
 

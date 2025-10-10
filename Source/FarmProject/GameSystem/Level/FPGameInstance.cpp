@@ -12,14 +12,16 @@
 #include "GameSystem/Data/SaveDataStructForm/InvenSaveForm.h"
 #include "GameSystem/Data/SaveDataStructForm/FieldSaveForm.h"
 #include "GameSystem/Building/FPBuilding.h"
-#include "GameSystem/Building/FPBuildingField.h"
 #include "GameSystem/FPSingleTon.h"
 #include "GameSystem/Level/MainFPLevelScript.h"
 #include "PaperSprite.h"
 #include "GameSystem/Building/ActorComponent/ClickableComponent.h"
+#include "GameSystem/Data/AnimalDataBase.h"
 
-#define BuildingCSVNum 6
-#define SeedCSVNum 9
+
+//TODO : 데이터 기록 방식을 FString에서 TSoftObjectPtr 로 변경할 것 (Seed, Building)
+//TODO : 바로 로드하는 방식 말고, 필요에 의해 로드해야할때 비동기 로드로 로드할 것 (지금은 모두 들고있는 형태)
+//TODO : 로드하는 클래스를 따로 만들것 (Subsystem으로 분리 필요)
 
 UFPGameInstance::UFPGameInstance()
 {
@@ -163,8 +165,6 @@ void UFPGameInstance::LoadBuildingCSVData()
 			NewItem->Name = FText::FromString(RowData->Name);
 			NewItem->BlueprintObject = LoadClass<UObject>(nullptr, *RowData->BuildingBlueprintPath);
 
-			//NewItem->BlueprintUI
-
 			BuildingDataArray.Add(NewItem->Id, NewItem);
 		}
 	}
@@ -191,8 +191,6 @@ void UFPGameInstance::LoadSeedCSVData()
 			NewItem->MStaticMesh = LoadObject<UStaticMesh>(nullptr, *RowData->SeedMMeshPath);
 			NewItem->LStaticMesh = LoadObject<UStaticMesh>(nullptr, *RowData->SeedLMeshPath);
 
-			//NewItem->BlueprintObject
-			
 			SeedDataArray.Add(NewItem->Id, NewItem);
 		}
 	}
@@ -200,6 +198,26 @@ void UFPGameInstance::LoadSeedCSVData()
 
 void UFPGameInstance::LoadAnimalCSVData()
 {
+	static const FString ContextString(TEXT("Item Context"));
+	TArray<FName> RowNames = AnimalTable->GetRowNames();
+
+	for (const FName& RowName : RowNames)
+	{
+		FAnimalDataCSV* RowData = SeedTable->FindRow<FAnimalDataCSV>(RowName, ContextString);
+		if (RowData)
+		{
+			UAnimalDataBase* NewItem = NewObject<UAnimalDataBase>();
+			NewItem->Id = RowData->Id;
+			NewItem->CurrentCount = 0;
+			NewItem->MaxCount = RowData->MaxCount;
+			NewItem->Image = RowData->AnimalImagePath.LoadSynchronous();
+			NewItem->Name = FText::FromString(RowData->Name);
+			UBlueprint* LoadedBlueprint = RowData->AnimalBluePrintPath.LoadSynchronous();
+			NewItem->BlueprintObject = LoadedBlueprint ? LoadedBlueprint->GeneratedClass : nullptr;
+
+			AnimalDataArray.Add(NewItem->Id, NewItem);
+		}
+	}
 }
 
 void UFPGameInstance::LoadInven()

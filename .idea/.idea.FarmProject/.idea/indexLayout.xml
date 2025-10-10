@@ -2,7 +2,10 @@
 <project version="4">
   <component name="UserContentModel">
     <attachedFolders />
-    <explicitIncludes />
+    <explicitIncludes>
+      <Path>Source/FarmProject/GameSystem/Data/AnimalDataBase.cpp</Path>
+      <Path>Source/FarmProject/GameSystem/Data/AnimalDataBase.h</Path>
+    </explicitIncludes>
     <explicitExcludes />
   </component>
 </project>

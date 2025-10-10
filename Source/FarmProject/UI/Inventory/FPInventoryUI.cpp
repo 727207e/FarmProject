@@ -6,11 +6,55 @@
 void UFPInventoryUI::ActiveUI()
 {
 	SetVisibility(ESlateVisibility::Visible);
-	UE_LOG(LogTemp, Error, TEXT("Inven Act"));
 }
 
 void UFPInventoryUI::DeactiveUI()
 {
-	UE_LOG(LogTemp, Error, TEXT("Inven Deact"));
 	SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UFPInventoryUI::NativeConstruct()
+{
+	Super::NativeConstruct();
+}
+
+void UFPInventoryUI::NativeDestruct()
+{
+	Super::NativeDestruct();
+}
+
+void UFPInventoryUI::OnTabButtonSelect(const EFPInventoryItemType InSelectType)
+{
+	switch (InSelectType) {
+		{
+			case EFPInventoryItemType::Farm:
+			BP_OnSwitchChange(EFPInventoryItemType::Farm);
+			break;
+			
+			case EFPInventoryItemType::Animal:
+			BP_OnSwitchChange(EFPInventoryItemType::Animal);
+			break;
+			
+			case EFPInventoryItemType::Building:
+			BP_OnSwitchChange(EFPInventoryItemType::Building);
+			break;
+			
+			case EFPInventoryItemType::Seed:
+			BP_OnSwitchChange(EFPInventoryItemType::Seed);
+			break;
+			
+			case EFPInventoryItemType::Egg:
+			BP_OnSwitchChange(EFPInventoryItemType::Egg);
+			break;
+			
+			default:
+			break;
+		} }
+}
+
+void UFPInvenAnimalItem::NativeOnListItemObjectSet(UObject* ListItemObject)
+{
+	IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
+
+	
 }

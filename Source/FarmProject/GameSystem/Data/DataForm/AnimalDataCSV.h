@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
+#include "Engine/Texture2D.h"
+#include "Engine/Blueprint.h"
 #include "AnimalDataCSV.generated.h"
 
 USTRUCT(BlueprintType)
@@ -19,13 +21,13 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
 	int32 MaxCount = 0;
-		
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	FString BuildingUIPath = "";
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	FString BuildingMeshPath = "";
+	FString Name = "";
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	FString BuildingImagePath = "";
+	TSoftObjectPtr<UBlueprint> AnimalBluePrintPath;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
+	TSoftObjectPtr<UTexture2D> AnimalImagePath;
 };

@@ -3,7 +3,6 @@
 
 #include "UI/Building/FPBuildingButtonUI.h"
 #include "Components/Button.h"
-#include "PaperSprite.h"
 #include "Components/TextBlock.h"
 #include "GameSystem/Data/BuildingItemData.h"
 #include "GameSystem/Level/FPGameInstance.h"
