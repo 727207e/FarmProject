@@ -3,9 +3,19 @@
 
 #include "UI/Inventory/FPInventoryUI.h"
 
+#include "FPInvenItem.h"
+#include "Components/ListView.h"
+#include "GameSystem/Level/FPGameInstance.h"
+#include "UI/FPHud.h"
+
 void UFPInventoryUI::ActiveUI()
 {
 	SetVisibility(ESlateVisibility::Visible);
+
+	if (LV_Animal)
+	{
+		LV_Animal->OnItemClicked().AddUObject(this, &ThisClass::OnInvenItemClicked);
+	}
 }
 
 void UFPInventoryUI::DeactiveUI()
@@ -54,16 +64,48 @@ void UFPInventoryUI::OnTabButtonSelect(const EFPInventoryItemType InSelectType)
 	}
 }
 
-void UFPInventoryUI::UpdateAnimalInven()
+void UFPInventoryUI::OnCloseButtonClicked()
 {
-	//인벤에서 Animal 데이터 가져오기
-	//데이터 가져와서 UObject 제작
-	//제작한거 ListView에 추가
+	if (AFPHud* FPHud = Cast<AFPHud>(GetWorld()->GetFirstPlayerController()->GetHUD()))
+	{
+		FPHud->ToggleInventoryUI();
+	}
 }
 
-void UFPInvenAnimalItem::NativeOnListItemObjectSet(UObject* ListItemObject)
+void UFPInventoryUI::OnInvenItemClicked(UObject* InItem)
 {
-	IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
+	//아이템 클릭시 해당 데이터 가져오기
 
+	//마우스 커서에 아이템 캐릭터(오브젝트) 붙여서 이동하기
+
+	//다시 클릭시 해당 월드좌표에 배치
+}
+
+void UFPInventoryUI::UpdateAnimalInven() const
+{
+	const UFPGameInstance* FPGameInst = Cast<UFPGameInstance>(GetWorld()->GetGameInstance());
+	if (FPGameInst == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%hs : Can't Find GameInst"), __func__);
+		return;
+	}
+
+	if (LV_Animal == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%hs : Can't Find AnimalListView"), __func__);
+		return;
+	}
 	
+	for (const TObjectPtr<UAnimalDataBase>& AnimalData : FPGameInst->AnimalInventory)
+	{
+		if (AnimalData == nullptr)
+		{
+			continue;
+		}
+
+		UFPInvenData* InvenData = NewObject<UFPInvenData>();
+		InvenData->ItemId = AnimalData->Id;
+		InvenData->ItemType = EFPInventoryItemType::Animal;
+		LV_Animal->AddItem(InvenData);
+	}
 }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "Setting/FPStylingUI.h"
 #include "UI/FPUserWidget.h"
 #include "FPHud.generated.h"
 
@@ -22,11 +23,11 @@ public:
 	AFPHud();
 
 	UFUNCTION()
-	void OpenStylingUI();
+	void ToggleStylingUI();
 	UFUNCTION()
-	void OpenInventoryUI();
+	void ToggleInventoryUI();
 
-	FORCEINLINE TWeakObjectPtr<class UFPStylingUI> GetStylingUI() const { return StylingUI; };
+	FORCEINLINE TWeakObjectPtr<UFPStylingUI> GetStylingUI() const { return StylingUI; };
 	
 	//동물도 같은 메소드 사용
 	//이때 파라미터만 수정해서 사용하면 될듯.
@@ -48,7 +49,7 @@ protected:
 
 private:
 	UPROPERTY()
-	TObjectPtr<class UFPStylingUI> StylingUI;
+	TObjectPtr<UFPStylingUI> StylingUI;
 	UPROPERTY()
 	TObjectPtr<class UFPDownInfoWidget> DownInfoUI;
 	UPROPERTY()

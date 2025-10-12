@@ -9,13 +9,14 @@
 #include "UI/FPUserWidget.h"
 #include "FPInventoryUI.generated.h"
 
+class UListView;
 class UButton;
 /**
  * 
  */
 
 UENUM(BlueprintType)
-enum class EFPInventoryItemType
+enum class EFPInventoryItemType : uint8
 {
 	Farm = 0,
 	Animal,
@@ -40,26 +41,16 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void OnTabButtonSelect(const EFPInventoryItemType InSelectType);
 
+	UFUNCTION(BlueprintCallable)
+	void OnCloseButtonClicked();
+	
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_OnSwitchChange(const EFPInventoryItemType InSelectType);
-
-	void UpdateAnimalInven();
-};
-
-
-UCLASS()
-class FARMPROJECT_API UFPInvenAnimalData : public UObject
-{
-	GENERATED_BODY()
-};
-
-UCLASS()
-class FARMPROJECT_API UFPInvenAnimalItem : public UFPUserWidget, public IUserObjectListEntry
-{
-	GENERATED_BODY()
-
-public:
+	
+	void OnInvenItemClicked(UObject* InItem);
+	void UpdateAnimalInven() const;
 
 protected:
-	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+	TObjectPtr<UListView> LV_Animal;
 };

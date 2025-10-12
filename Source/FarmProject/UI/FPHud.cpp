@@ -15,7 +15,7 @@ AFPHud::AFPHud()
 {
 }
 
-void AFPHud::OpenStylingUI()
+void AFPHud::ToggleStylingUI()
 {
     if (StylingUI)
     {
@@ -40,7 +40,7 @@ void AFPHud::OpenStylingUI()
     }
 }
 
-void AFPHud::OpenInventoryUI()
+void AFPHud::ToggleInventoryUI()
 {
     if (InventoryUI)
     {

@@ -242,6 +242,25 @@ void UFPGameInstance::RemoveTimeCheckArray(TWeakObjectPtr<UFieldItemData> Target
 	TimeCheckArray.Remove(Target);
 }
 
+TWeakObjectPtr<UAnimalDataBase> UFPGameInstance::GetAnimalInvenData(const int32 InAnimalId) const
+{
+	for (const TObjectPtr<UAnimalDataBase>& InvenAnimalData : AnimalInventory)
+	{
+		if (InvenAnimalData == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("%hs : Empty Item In AnimalInventory"), __func__);
+			continue;
+		}
+
+		if (InvenAnimalData->Id == InAnimalId)
+		{
+			return InvenAnimalData;
+		}
+	}
+
+	return nullptr;
+}
+
 void UFPGameInstance::LoadBuildingCSVData()
 {
 	static const FString ContextString(TEXT("Item Context"));
@@ -388,6 +407,18 @@ void UFPGameInstance::SortItem(TObjectPtr<UItemDataBase> item)
 		else
 		{
 			SeedInventory.Add(SeedItem);
+		}
+	}
+	else if (item->IsA(UAnimalDataBase::StaticClass()))
+	{
+		TObjectPtr<UAnimalDataBase> AnimalItem = Cast<UAnimalDataBase>(item);
+		if (item->CurrentCount <= 0)
+		{
+			AnimalInventory.Remove(AnimalItem);
+		}
+		else
+		{
+			AnimalInventory.Add(AnimalItem);
 		}
 	}
 }

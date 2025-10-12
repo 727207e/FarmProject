@@ -43,6 +43,8 @@ public:
 	FORCEINLINE TMap<int32, TObjectPtr<class USeedDataBase>> GetSeedArray() { return SeedDataArray; }
 	FORCEINLINE TMap<int32, TObjectPtr<UAnimalDataBase>> GetAnimalArray() { return AnimalDataArray; }
 
+	TWeakObjectPtr<UAnimalDataBase> GetAnimalInvenData(const int32 InAnimalId) const;
+	
 public:
 	TArray<TObjectPtr<class UBuildingItemData>> BuildingInventory;
 	TArray<TObjectPtr<class USeedDataBase>> SeedInventory;

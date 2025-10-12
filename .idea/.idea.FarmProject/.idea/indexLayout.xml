@@ -6,6 +6,9 @@
       <Path>Source/FarmProject/GameSystem/Data/AnimalDataBase.cpp</Path>
       <Path>Source/FarmProject/GameSystem/Data/AnimalDataBase.h</Path>
     </explicitIncludes>
-    <explicitExcludes />
+    <explicitExcludes>
+      <Path>Source/FarmProject/UI/Inventory/FPInvenItem.cpp</Path>
+      <Path>Source/FarmProject/UI/Inventory/FPInvenItem.h</Path>
+    </explicitExcludes>
   </component>
 </project>
