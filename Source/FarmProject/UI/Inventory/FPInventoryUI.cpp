@@ -4,7 +4,10 @@
 #include "UI/Inventory/FPInventoryUI.h"
 
 #include "FPInvenItem.h"
+#include "Character/FPAnimalCharacterBase.h"
 #include "Components/ListView.h"
+#include "GameFramework/Character.h"
+#include "GameSystem/Data/FieldItemData.h"
 #include "GameSystem/Level/FPGameInstance.h"
 #include "UI/FPHud.h"
 
@@ -75,10 +78,27 @@ void UFPInventoryUI::OnCloseButtonClicked()
 void UFPInventoryUI::OnInvenItemClicked(UObject* InItem)
 {
 	//아이템 클릭시 해당 데이터 가져오기
+	if (UFPInvenData* ItemData = Cast<UFPInvenData>(InItem))
+	{
+		//데이터의 캐릭터 생성
+		const UFPGameInstance* FPGameInst = Cast<UFPGameInstance>(GetWorld()->GetGameInstance());
+		if (FPGameInst == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("%hs : Can't Find GameInst"), __func__);
+			return;
+		}
 
-	//마우스 커서에 아이템 캐릭터(오브젝트) 붙여서 이동하기
+		TWeakObjectPtr<UItemDataBase> ItemDataBase = FPGameInst->GetAnimalInvenData(ItemData->ItemId);
+		if (ItemDataBase.IsValid() == false && ItemDataBase->BlueprintObject == nullptr)
+		{
+			return;
+		}
 
-	//다시 클릭시 해당 월드좌표에 배치
+		if (AFPAnimalCharacterBase* AnimalActor = GetWorld()->SpawnActor<AFPAnimalCharacterBase>(ItemDataBase->BlueprintObject))
+		{
+			AnimalActor->OnIconClickedDown();
+		}
+	}
 }
 
 void UFPInventoryUI::UpdateAnimalInven() const
@@ -95,7 +115,8 @@ void UFPInventoryUI::UpdateAnimalInven() const
 		UE_LOG(LogTemp, Error, TEXT("%hs : Can't Find AnimalListView"), __func__);
 		return;
 	}
-	
+
+	LV_Animal->ClearListItems();
 	for (const TObjectPtr<UAnimalDataBase>& AnimalData : FPGameInst->AnimalInventory)
 	{
 		if (AnimalData == nullptr)
